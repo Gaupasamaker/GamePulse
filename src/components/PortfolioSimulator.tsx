@@ -4,9 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/providers/LanguageProvider';
 import { SEED_COMPANIES } from '@/data/companies';
 import { useQuotes } from '@/hooks/useQuotes';
-import { PieChart, Plus, Trash2, TrendingUp, TrendingDown, DollarSign, Calculator } from 'lucide-react';
+import { PieChart, Plus, Trash2, TrendingUp, TrendingDown, DollarSign, Calculator, Cloud, Save } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { useAuth } from '@/providers/AuthProvider';
+import { supabase } from '@/lib/supabase';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -21,43 +23,100 @@ interface Position {
 
 export const PortfolioSimulator: React.FC = () => {
     const { t } = useLanguage();
+    const { user } = useAuth();
     const [positions, setPositions] = useState<Position[]>([]);
     const [newTicker, setNewTicker] = useState('');
     const [newShares, setNewShares] = useState('');
     const [newCost, setNewCost] = useState('');
+    const [loadingDb, setLoadingDb] = useState(false);
 
     // Cargar quotes para todas las posiciones
-    const { quotes, loading } = useQuotes(positions.map(p => p.ticker));
+    const { quotes, loading: loadingQuotes } = useQuotes(positions.map(p => p.ticker));
 
-    // Persistencia
+    // Cargar datos (Nube o Local)
     useEffect(() => {
-        const saved = localStorage.getItem('gamepulse_portfolio');
-        if (saved) setPositions(JSON.parse(saved));
-    }, []);
+        const loadPositions = async () => {
+            if (user) {
+                setLoadingDb(true);
+                const { data } = await supabase.from('transactions').select('*');
+                if (data) {
+                    const cloudPositions = data.map(tx => ({
+                        id: tx.id,
+                        ticker: tx.ticker,
+                        shares: Number(tx.amount), // Postgres numeric viene como string/number dependiendo del driver
+                        avgCost: Number(tx.price)
+                    }));
+                    setPositions(cloudPositions);
+                }
+                setLoadingDb(false);
+            } else {
+                // Modo Offline
+                const saved = localStorage.getItem('gamepulse_portfolio');
+                if (saved) setPositions(JSON.parse(saved));
+            }
+        };
+        loadPositions();
+    }, [user]);
 
-    const savePositions = (updated: Position[]) => {
-        setPositions(updated);
-        localStorage.setItem('gamepulse_portfolio', JSON.stringify(updated));
+    // Función auxiliar para actualizar LocalStorage solo si no hay usuario
+    const updateLocal = (items: Position[]) => {
+        if (!user) {
+            localStorage.setItem('gamepulse_portfolio', JSON.stringify(items));
+        }
+        setPositions(items);
     };
 
-    const addPosition = () => {
+    const addPosition = async () => {
         if (!newTicker || !newShares || !newCost) return;
 
-        const position: Position = {
-            id: Math.random().toString(36).substr(2, 9),
-            ticker: newTicker,
-            shares: parseFloat(newShares),
-            avgCost: parseFloat(newCost),
-        };
+        const sharesVal = parseFloat(newShares);
+        const costVal = parseFloat(newCost);
 
-        savePositions([...positions, position]);
+        if (user) {
+            // Guardar en Nube
+            const { data, error } = await supabase.from('transactions').insert({
+                user_id: user.id,
+                ticker: newTicker,
+                amount: sharesVal,
+                price: costVal,
+                type: 'buy'
+            }).select().single();
+
+            if (data && !error) {
+                const newPos: Position = {
+                    id: data.id,
+                    ticker: data.ticker,
+                    shares: Number(data.amount),
+                    avgCost: Number(data.price)
+                };
+                setPositions([...positions, newPos]);
+
+                // Actualizar total_equity en perfil (Basic aggregation)
+                // En una app real esto se haría con un Trigger o un Edge Function más complejo
+            }
+        } else {
+            // Guardar en Local
+            const position: Position = {
+                id: Math.random().toString(36).substr(2, 9),
+                ticker: newTicker,
+                shares: sharesVal,
+                avgCost: costVal,
+            };
+            updateLocal([...positions, position]);
+        }
+
         setNewTicker('');
         setNewShares('');
         setNewCost('');
     };
 
-    const removePosition = (id: string) => {
-        savePositions(positions.filter(p => p.id !== id));
+    const removePosition = async (id: string) => {
+        if (user) {
+            await supabase.from('transactions').delete().eq('id', id);
+            setPositions(positions.filter(p => p.id !== id));
+        } else {
+            updateLocal(positions.filter(p => p.id !== id));
+        }
     };
 
     // Cálculos
@@ -173,11 +232,20 @@ export const PortfolioSimulator: React.FC = () => {
 
                 {/* Tabla de Posiciones */}
                 <div className="lg:col-span-2 terminal-card overflow-hidden">
-                    <div className="p-4 border-b border-border-app bg-black/20">
+                    <div className="p-4 border-b border-border-app bg-black/20 flex justify-between items-center">
                         <h3 className="text-sm font-mono font-bold text-gray-400 flex items-center gap-2">
                             <PieChart size={16} className="text-emerald-500" />
                             {t('my_positions')}
                         </h3>
+                        {user ? (
+                            <div className="text-[10px] text-blue-400 font-mono flex items-center gap-1 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
+                                <Cloud size={10} /> CLOUD SYNC ON
+                            </div>
+                        ) : (
+                            <div className="text-[10px] text-gray-500 font-mono flex items-center gap-1">
+                                <Save size={10} /> LOCAL STORAGE
+                            </div>
+                        )}
                     </div>
 
                     <div className="overflow-x-auto">
@@ -214,7 +282,7 @@ export const PortfolioSimulator: React.FC = () => {
                                                 <td className="px-4 py-3 text-right text-gray-300">{p.shares}</td>
                                                 <td className="px-4 py-3 text-right text-gray-300">${p.avgCost.toFixed(2)}</td>
                                                 <td className="px-4 py-3 text-right text-white">
-                                                    {loading ? <span className="animate-pulse">...</span> : `$${price.toFixed(2)}`}
+                                                    {loadingQuotes ? <span className="animate-pulse">...</span> : `$${price.toFixed(2)}`}
                                                 </td>
                                                 <td className="px-4 py-3 text-right font-bold text-white">
                                                     ${marketValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
