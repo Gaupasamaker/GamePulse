@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Activity, Shield, Settings, Bell, Globe, Menu, X } from 'lucide-react';
+import { Activity, Shield, Settings, Bell, Globe, Menu, X, Trophy } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '@/providers/LanguageProvider';
+import { AuthButton } from './AuthButton';
 
 export const Header: React.FC = () => {
+    // ... (keep existing hook calls)
     const { t, language, setLanguage } = useLanguage();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -13,6 +15,7 @@ export const Header: React.FC = () => {
 
     return (
         <header className="border-b border-border-app px-6 py-4 flex items-center justify-between bg-black/50 backdrop-blur-md sticky top-0 z-50">
+            {/* ... (keep start of header) */}
             <div className="flex items-center gap-6">
                 <Link href="/" className="flex items-center gap-2 group">
                     <div className="bg-blue-600 p-1.5 rounded-sm group-hover:bg-blue-500 transition-colors">
@@ -29,24 +32,19 @@ export const Header: React.FC = () => {
                     <Link href="/news" className="px-3 py-1.5 text-sm text-gray-400 hover:text-white transition-colors font-mono">{t('sector_news')}</Link>
                     <Link href="/alerts" className="px-3 py-1.5 text-sm text-gray-400 hover:text-white transition-colors font-mono">{t('alerts')}</Link>
                     <Link href="/portfolio" className="px-3 py-1.5 text-sm text-gray-400 hover:text-white transition-colors font-mono">{t('portfolio')}</Link>
+                    <Link href="/leaderboard" className="px-3 py-1.5 text-sm text-gray-400 hover:text-white transition-colors font-mono flex items-center gap-1">
+                        <Trophy size={14} className="text-yellow-500" /> Leaderboard
+                    </Link>
                     <Link href="/compare" className="px-3 py-1.5 text-sm text-gray-400 hover:text-white transition-colors font-mono">{t('market_comparator')}</Link>
                     <Link href="/calendar" className="px-3 py-1.5 text-sm text-gray-400 hover:text-white transition-colors font-mono">{t('calendar')}</Link>
-                    <Link href="/admin" className="px-3 py-1.5 text-sm text-gray-400 hover:text-white transition-colors font-mono flex items-center gap-2">
-                        <Shield size={14} /> {t('admin')}
-                    </Link>
                 </nav>
             </div>
 
             <div className="flex items-center gap-4">
-                <button
-                    onClick={() => setLanguage(language === 'es' ? 'en' : 'es')}
-                    className="hidden md:flex text-gray-400 hover:text-white transition-colors items-center gap-1 font-mono text-xs uppercase border border-border-app px-2 py-1 rounded"
-                >
-                    <Globe size={14} /> {language.toUpperCase()}
-                </button>
-                <button className="hidden md:block text-gray-400 hover:text-white transition-colors">
-                    <Bell size={18} />
-                </button>
+                <div className="hidden md:block">
+                    <AuthButton />
+                </div>
+
                 <div className="hidden md:block h-4 w-[1px] bg-border-app"></div>
                 <div className="hidden md:block text-[10px] font-mono text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-sm border border-emerald-500/20">
                     {t('system_ok')}

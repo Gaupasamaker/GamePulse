@@ -1,0 +1,118 @@
+"use client";
+
+import React, { useEffect, useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
+import { Trophy, TrendingUp, User, Shield } from 'lucide-react';
+import { supabase, Profile } from '@/lib/supabase';
+import { useAuth } from '@/providers/AuthProvider';
+
+export default function LeaderboardPage() {
+    const { user } = useAuth();
+    const [profiles, setProfiles] = useState<Profile[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchLeaderboard = async () => {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .order('total_equity', { ascending: false })
+                .limit(20);
+
+            if (error) {
+                console.error('Error fetching leaderboard:', error);
+            } else {
+                setProfiles(data || []);
+            }
+            setLoading(false);
+        };
+
+        fetchLeaderboard();
+
+        // Realtime subscription? Maybe for V2.
+    }, []);
+
+    return (
+        <div className="p-6 max-w-4xl mx-auto flex flex-col gap-8">
+            <div className="flex flex-col gap-2">
+                <h1 className="text-3xl font-bold font-mono text-white tracking-tighter flex items-center gap-3">
+                    <Trophy className="text-yellow-500" size={32} />
+                    GLOBAL LEADERBOARD
+                </h1>
+                <p className="text-gray-500 font-mono">
+                    Los mejores inversores de GamePulse Arena. ¿Estás en el TOP 10?
+                </p>
+            </div>
+
+            {!user && (
+                <div className="bg-blue-900/20 border border-blue-500/30 p-4 rounded-lg flex items-center gap-4">
+                    <Shield className="text-blue-400" />
+                    <div>
+                        <h3 className="text-white font-bold text-sm">Modo Espectador</h3>
+                        <p className="text-gray-400 text-xs">Inicia sesión para competir y guardar tu puntuación en la nube.</p>
+                    </div>
+                </div>
+            )}
+
+            <div className="terminal-card overflow-hidden">
+                <table className="w-full text-left font-mono text-sm">
+                    <thead className="bg-[#1a1a1a] text-gray-500 border-b border-gray-800">
+                        <tr>
+                            <th className="p-4 w-16 text-center">RANK</th>
+                            <th className="p-4">JUGADOR</th>
+                            <th className="p-4 text-right">VALOR CARTERA</th>
+                            <th className="p-4 text-right">PUNTOS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {loading ? (
+                            [...Array(5)].map((_, i) => (
+                                <tr key={i} className="border-b border-gray-800/50">
+                                    <td className="p-4"><div className="h-4 w-8 bg-gray-800 rounded animate-pulse" /></td>
+                                    <td className="p-4"><div className="h-4 w-32 bg-gray-800 rounded animate-pulse" /></td>
+                                    <td className="p-4"><div className="h-4 w-24 bg-gray-800 rounded animate-pulse ml-auto" /></td>
+                                    <td className="p-4"><div className="h-4 w-16 bg-gray-800 rounded animate-pulse ml-auto" /></td>
+                                </tr>
+                            ))
+                        ) : profiles.length > 0 ? (
+                            profiles.map((profile, index) => (
+                                <tr
+                                    key={profile.id}
+                                    className={`border-b border-gray-800/50 hover:bg-white/5 transition-colors ${user?.id === profile.id ? 'bg-blue-500/10 border-l-2 border-l-blue-500' : ''}`}
+                                >
+                                    <td className="p-4 text-center font-bold text-gray-400">
+                                        {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
+                                    </td>
+                                    <td className="p-4 flex items-center gap-3">
+                                        {profile.avatar_url ? (
+                                            <img src={profile.avatar_url} className="w-8 h-8 rounded-full border border-gray-700" alt="avatar" />
+                                        ) : (
+                                            <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-xs">
+                                                {profile.username?.charAt(0).toUpperCase() || '?'}
+                                            </div>
+                                        )}
+                                        <span className={user?.id === profile.id ? 'text-blue-400 font-bold' : 'text-gray-300'}>
+                                            {profile.username || 'Anonymous'}
+                                        </span>
+                                    </td>
+                                    <td className="p-4 text-right text-emerald-400 font-bold">
+                                        ${profile.total_equity?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    </td>
+                                    <td className="p-4 text-right text-yellow-500">
+                                        {profile.ranking_points}
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={4} className="p-8 text-center text-gray-500">
+                                    Aún no hay jugadores clasificados. ¡Sé el primero!
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+}

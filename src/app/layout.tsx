@@ -23,6 +23,7 @@ export const metadata: Metadata = {
 };
 
 import { LanguageProvider } from "@/providers/LanguageProvider";
+import { AuthProvider } from "@/providers/AuthProvider";
 
 export default function RootLayout({
   children,
@@ -33,14 +34,16 @@ export default function RootLayout({
     <html lang="es" suppressHydrationWarning>
       <body className="antialiased min-h-screen flex flex-col">
         <LanguageProvider>
-          <Disclaimer />
-          <Header />
-          <main className="flex-1 overflow-y-auto">
-            {children}
-          </main>
-          <footer className="border-t border-border-app px-6 py-4 text-center text-[10px] font-mono text-gray-600">
-            GAMEPULSE_BETA // 2026 // NO_FINANCIAL_ADVICE
-          </footer>
+          <AuthProvider>
+            <Disclaimer />
+            <Header />
+            <main className="flex-1 overflow-y-auto">
+              {children}
+            </main>
+            <footer className="border-t border-border-app px-6 py-4 text-center text-[10px] font-mono text-gray-600">
+              GAMEPULSE_BETA // 2026 // NO_FINANCIAL_ADVICE
+            </footer>
+          </AuthProvider>
         </LanguageProvider>
       </body>
     </html>
