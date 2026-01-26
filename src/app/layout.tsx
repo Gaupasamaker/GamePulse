@@ -1,7 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Header } from "@/components/Header";
 import { Disclaimer } from "@/components/Disclaimer";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: "#0a0a0b",
+};
 
 export const metadata: Metadata = {
   title: "GamePulse | Gaming Business Intelligence",
@@ -12,13 +20,6 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
     title: "GamePulse",
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false, // App-like feel
-  },
-  themeColor: "#0a0a0b",
 };
 
 import { LanguageProvider } from "@/providers/LanguageProvider";
