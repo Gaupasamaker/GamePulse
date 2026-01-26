@@ -120,14 +120,32 @@ export const PortfolioSimulator: React.FC = () => {
     };
 
     // Cálculos
-    const totalInvested = positions.reduce((acc, p) => acc + (p.shares * p.avgCost), 0);
-    const currentValue = positions.reduce((acc, p) => {
-        const price = quotes[p.ticker]?.price || p.avgCost; // Fallback a coste si no hay quote
-        return acc + (p.shares * price);
-    }, 0);
+    // Cálculos Memoizados
+    const { totalInvested, currentValue, totalGain, totalRoi } = React.useMemo(() => {
+        const invested = positions.reduce((acc, p) => acc + (p.shares * p.avgCost), 0);
+        const current = positions.reduce((acc, p) => {
+            const price = quotes[p.ticker]?.price || p.avgCost;
+            return acc + (p.shares * price);
+        }, 0);
+        const gain = current - invested;
+        const roi = invested > 0 ? (gain / invested) * 100 : 0;
+        return { totalInvested: invested, currentValue: current, totalGain: gain, totalRoi: roi };
+    }, [positions, quotes]);
 
-    const totalGain = currentValue - totalInvested;
-    const totalRoi = totalInvested > 0 ? (totalGain / totalInvested) * 100 : 0;
+    // Sincronizar Equity con Perfil (Leaderboard)
+    useEffect(() => {
+        const syncEquity = async () => {
+            if (user && currentValue > 0 && !loadingQuotes) {
+                await supabase.from('profiles').update({
+                    total_equity: currentValue,
+                    updated_at: new Date().toISOString()
+                }).eq('id', user.id);
+            }
+        };
+        // Debounce simple: esperar 2s después de cambios
+        const timeout = setTimeout(syncEquity, 2000);
+        return () => clearTimeout(timeout);
+    }, [currentValue, user, loadingQuotes]);
 
     return (
         <div className="flex flex-col gap-6">

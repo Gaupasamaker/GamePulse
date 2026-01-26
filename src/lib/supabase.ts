@@ -1,11 +1,11 @@
-import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
 // Estas variables deben definirse en .env.local
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
 
 // Cliente singleton para usar en toda la app
-export const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = createBrowserClient(supabaseUrl, supabaseKey);
 
 // Tipos para nuesta base de datos (se pueden generar automáticos con Supabase CLI, 
 // pero los definimos a mano para el MVP por simplicidad)

@@ -71,6 +71,7 @@ export const dictionary = {
         briefing_bullish_desc: "El sector gaming muestra fuerza hoy, liderado por ganancias en Hardware.",
         briefing_bearish_desc: "Sesgo negativo en el mercado. Oportunidades de compra en correcciones.",
         briefing_mixed_desc: "Volatilidad moderada sin una tendencia clara definida.",
+        no_activity: "NO HAY ACTIVIDAD RECIENTE",
     },
     en: {
         dashboard: "DASHBOARD",
@@ -142,5 +143,6 @@ export const dictionary = {
         briefing_bullish_desc: "Gaming sector shows strength today, led by Hardware gains.",
         briefing_bearish_desc: "Negative bias across the board. Buying opportunities in dips.",
         briefing_mixed_desc: "Moderate volatility with no clear trend defined yet.",
+        no_activity: "NO RECENT ACTIVITY",
     }
 };
