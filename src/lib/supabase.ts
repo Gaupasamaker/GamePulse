@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Estas variables deben definirse en .env.local
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 // Cliente singleton para usar en toda la app
 export const supabase = createClient(supabaseUrl, supabaseKey);
