@@ -66,7 +66,7 @@ export async function getNews(query: string = 'gaming'): Promise<News[]> {
                 summary: '', // Yahoo search news a veces no trae summary limpio, usamos título como fallback visual en UI
                 source: item.publisher,
                 url: item.link,
-                datetime: item.providerPublishTime ? new Date(item.providerPublishTime).getTime() : Math.floor(Date.now() / 1000),
+                datetime: item.providerPublishTime ? new Date(item.providerPublishTime).getTime() : Date.now(),
                 category: 'General',
                 related: item.relatedTickers?.join(',') || ''
             }));

@@ -12,9 +12,9 @@ interface NewsCardProps {
 
 const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
     const { t, language } = useLanguage();
-    // Asegurar que datetime sea un número válido
-    const timestamp = typeof news.datetime === 'number' ? news.datetime : Date.now() / 1000;
-    const date = new Date(timestamp * 1000);
+    // Asegurar que datetime sea un número válido (ahora viene en millisegundos desde el backend)
+    const timestamp = typeof news.datetime === 'number' ? news.datetime : Date.now();
+    const date = new Date(timestamp);
     const dateLocale = language === 'es' ? es : enUS;
 
     // Validar que la fecha sea válida
