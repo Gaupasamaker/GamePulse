@@ -47,3 +47,4 @@ export async function getRSSNews(): Promise<RSSItem[]> {
     // Ordenar por fecha (más reciente primero)
     return allNews.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
 }
+
