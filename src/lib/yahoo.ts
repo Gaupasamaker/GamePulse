@@ -1,4 +1,5 @@
 import YahooFinance from 'yahoo-finance2';
+// Usar instanciación explícita para evitar problemas de compatibilidad en ciertas versiones/entornos
 const yahooFinance = new YahooFinance();
 
 // Interfaz unificada para la app (independiente de la fuente)
@@ -65,7 +66,7 @@ export async function getNews(query: string = 'gaming'): Promise<News[]> {
                 summary: '', // Yahoo search news a veces no trae summary limpio, usamos título como fallback visual en UI
                 source: item.publisher,
                 url: item.link,
-                datetime: item.providerPublishTime || Math.floor(Date.now() / 1000), // Fallback a ahora si no hay fecha
+                datetime: item.providerPublishTime ? new Date(item.providerPublishTime).getTime() : Math.floor(Date.now() / 1000),
                 category: 'General',
                 related: item.relatedTickers?.join(',') || ''
             }));

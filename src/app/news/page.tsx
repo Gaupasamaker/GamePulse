@@ -6,10 +6,10 @@ import { Newspaper } from 'lucide-react';
 import { useLanguage } from '@/providers/LanguageProvider';
 
 const CATEGORIES = [
-    { id: 'general', labelKey: 'General', query: 'gaming industry video games' },
-    { id: 'financial', labelKey: 'Financial', query: 'gaming industry earnings revenue stock' },
-    { id: 'ma', labelKey: 'M&A', query: 'gaming industry acquisition merger buyout' },
-    { id: 'tech', labelKey: 'Tech', query: 'gaming technology hardware console gpu' },
+    { id: 'general', labelKey: 'General', query: 'gaming' },
+    { id: 'financial', labelKey: 'Financial', query: 'gaming stock' },
+    { id: 'ma', labelKey: 'M&A', query: 'gaming acquisition' },
+    { id: 'tech', labelKey: 'Tech', query: 'gaming technology' },
 ];
 
 export default function NewsPage() {
@@ -35,8 +35,8 @@ export default function NewsPage() {
                             key={cat.id}
                             onClick={() => setSelectedCategory(cat)}
                             className={`px-3 py-1.5 rounded text-[10px] font-mono border transition-colors ${selectedCategory.id === cat.id
-                                    ? 'bg-blue-600 border-blue-500 text-white'
-                                    : 'bg-black/50 border-gray-700 text-gray-400 hover:border-gray-500'
+                                ? 'bg-blue-600 border-blue-500 text-white'
+                                : 'bg-black/50 border-gray-700 text-gray-400 hover:border-gray-500'
                                 }`}
                         >
                             {cat.labelKey}
