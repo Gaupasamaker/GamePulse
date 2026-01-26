@@ -1,55 +1,78 @@
 # GamePulse 🎮📈
 
-GamePulse es una web app de inteligencia de negocio diseñada exclusivamente para la monitorización de empresas del sector de videojuegos. Proporciona datos de mercado, noticias sectoriales y un sistema de alertas informativas.
+**GamePulse** is a professional Market Intelligence Dashboard specialized in the Gaming Industry. Built with **Next.js**, it provides real-time financial data, news aggregation, and portfolio simulation tools for investors and gamers.
 
-## Requisitos Previos
+![GamePulse App](https://via.placeholder.com/1200x600?text=GamePulse+Dashboard+Preview)
 
-- Node.js 18+ 
-- NPM o PNPM
-- Una API Key de [Finnhub](https://finnhub.io/) (Gratuita)
+## ✨ Features
 
-## Configuración del Entorno
+### 🏢 Real-Time Market Data
+- Live quotes for major gaming companies (Sony, Nintendo, Nvidia, Microsoft, EA, etc.).
+- Powered by **Yahoo Finance API** (via `yahoo-finance2`).
+- Auto-refresh mechanism (Quotes: 60s, News: 5min).
 
-1. Copia el archivo de ejemplo de variables de entorno:
-   ```bash
-   touch .env.local
-   ```
+### 🚀 Advanced Analytics [PRO]
+- **Interactive Charts**: Intraday (15min), Short-term (1H), and Long-term trends.
+- **Technical Indicators**: Toggleable **SMA 20** (Simple Moving Average) and **Volume** bars.
+- **Market Briefing**: AI-driven daily narrative summary of market sentiment (Bullish/Bearish).
 
-2. Añade tu API Key de Finnhub:
-   ```env
-   FINNHUB_API_KEY=tu_api_key_aqui
-   ```
+### 💼 Portfolio Simulator
+- Track your virtual positions with automatic ROI calculation.
+- **Smart Autofill**: Automatically fetches current market price when adding stocks.
+- LocalStorage persistence (your data stays in your browser).
 
-## Instalación y Ejecución
+### ⚔️ Market Comparator
+- Compare performance between two assets (e.g., `ATVI` vs `TTWO`) on a normalized percentage scale (0% base).
 
-```bash
-# Instalar dependencias
-npm install
+### 📅 Event Calendar
+- **Earnings Calls**: Upcoming financial results.
+- **Game Releases**: Major industry launches with impact estimation.
 
-# Ejecutar en modo desarrollo
-npm run dev
+### 📱 PWA Ready (Mobile Support)
+- Fully responsive design ("Mobile First").
+- Installable on iOS/Android (Add to Home Screen) with native look & feel.
 
-# Compilar para producción
-npm run build
-```
+## 🛠️ Tech Stack
 
-## Stack Tecnológico
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router).
+- **Styling**: Tailwind CSS (Custom "Cyber-Terminal" aesthetic).
+- **Charts**: Chart.js + React-Chartjs-2.
+- **Data**: Yahoo Finance API.
+- **Icons**: Lucide React.
+- **Deployment**: Vercel ready.
 
-- **Frontend**: Next.js 15+ (App Router), TypeScript, Tailwind CSS v4.
-- **Gráficos**: Chart.js con react-chartjs-2.
-- **Iconos**: Lucide React.
-- **Backend/API**: Next.js API Routes (Proxy con caching de 60s para precios y 5-10m para noticias).
-- **Persistencia**: LocalStorage (Alertas y ajustes de Admin).
+## 🚀 Getting Started
 
-## Estructura de Datos (Seed)
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/Gaupasamaker/GamePulse.git
+    cd GamePulse
+    ```
 
-El proyecto incluye un dataset inicial (`src/data/companies.ts`) con 30 empresas globales incluyendo Nintendo, Sony, Tencent, EA, Take-Two, Ubisoft, y muchas más, categorizadas por:
-- Publisher
-- Platform
-- Holding
-- Indie-public
-- Esports-related
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    # or
+    pnpm install
+    ```
 
-## Disclaimer
+3.  **Run Development Server**:
+    ```bash
+    npm run dev
+    ```
+    Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-**Información general. No asesoramiento financiero.** GamePulse es una herramienta de inteligencia de negocio y no debe utilizarse como base para decisiones de inversión.
+## 📦 Deployment
+
+This project is optimized for **Vercel**.
+
+1.  Push your code to GitHub.
+2.  Import the project in Vercel.
+3.  Deploy (No extra configuration needed).
+
+## 📄 License
+
+MIT License. Created for educational and business intelligence purposes.
+
+---
+*Built with ❤️ by Antigravity*
