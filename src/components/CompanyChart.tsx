@@ -222,8 +222,16 @@ export const CompanyChart: React.FC<CompanyChartProps> = ({ ticker }) => {
                     <div className="absolute inset-0 flex items-center justify-center bg-black/5 rounded-lg border border-border-app border-dashed">
                         <Loader2 className="animate-spin text-blue-500" size={24} />
                     </div>
+                ) : data ? (
+                    <Line options={options} data={data} />
                 ) : (
-                    data && <Line options={options} data={data} />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/5 rounded-lg border border-border-app border-dashed text-gray-500 font-mono text-xs gap-2">
+                        <span className="text-xl">📉</span>
+                        <span>DATOS NO DISPONIBLES</span>
+                        <span className="text-[10px] opacity-70 max-w-[200px] text-center">
+                            El mercado podría estar cerrado o no hay datos para este rango ({range}).
+                        </span>
+                    </div>
                 )}
             </div>
         </div>

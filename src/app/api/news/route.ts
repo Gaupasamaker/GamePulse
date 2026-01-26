@@ -7,7 +7,8 @@ export async function GET(request: NextRequest) {
         const query = searchParams.get('q') || 'gaming industry video games';
 
         // Si la query es muy genérica, añadimos términos para mejorar relevancia
-        const finalQuery = query === 'gaming industry' ? 'gaming industry video games business' : query;
+        // query más simple suele dar mejores resultados en Yahoo search
+        const finalQuery = query;
 
         const data = await getNews(finalQuery);
         return NextResponse.json(data);
