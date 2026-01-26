@@ -38,9 +38,19 @@ const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
         <div className="terminal-card p-4 flex flex-col gap-3 group">
             <div className="flex justify-between items-start">
                 <div className="flex items-center gap-2 text-[10px] font-mono">
-                    <span className="bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/20 uppercase">
-                        {news.source}
-                    </span>
+                    {news.source === 'GamesIndustry.biz' ? (
+                        <span className="bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded border border-purple-500/20 uppercase font-bold flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-purple-500"></span> GAMESINDUSTRY.BIZ
+                        </span>
+                    ) : news.source === 'Game Developer' ? (
+                        <span className="bg-orange-500/10 text-orange-400 px-2 py-0.5 rounded border border-orange-500/20 uppercase font-bold flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-orange-500"></span> GAME DEVELOPER
+                        </span>
+                    ) : (
+                        <span className="bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/20 uppercase">
+                            {news.source}
+                        </span>
+                    )}
                     <span className="flex items-center gap-1 text-gray-500">
                         <Clock size={12} />
                         {isValidDate ? formatDistanceToNow(date, { addSuffix: true, locale: dateLocale }) : ''}
