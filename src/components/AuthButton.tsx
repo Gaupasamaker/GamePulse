@@ -11,20 +11,22 @@ export const AuthButton = () => {
     const { user, signInWithGoogle, signOut, loading } = useAuth();
     const { t } = useLanguage();
     const [avatar, setAvatar] = useState<string | null>(null);
+    const [username, setUsername] = useState<string | null>(null);
 
     useEffect(() => {
         if (user) {
-            // 1. Fetch initial avatar
-            const fetchAvatar = async () => {
+            // 1. Fetch initial profile data
+            const fetchProfile = async () => {
                 const { data } = await supabase
                     .from('profiles')
-                    .select('avatar_url')
+                    .select('avatar_url, username')
                     .eq('id', user.id)
                     .single();
 
                 setAvatar(data?.avatar_url || user.user_metadata.avatar_url);
+                setUsername(data?.username || user.user_metadata.full_name);
             };
-            fetchAvatar();
+            fetchProfile();
 
             // 2. Subscribe to realtime changes
             const channel = supabase
@@ -38,8 +40,9 @@ export const AuthButton = () => {
                         filter: `id=eq.${user.id}`
                     },
                     (payload) => {
-                        if (payload.new && 'avatar_url' in payload.new) {
-                            setAvatar(payload.new.avatar_url as string);
+                        if (payload.new) {
+                            if ('avatar_url' in payload.new) setAvatar(payload.new.avatar_url as string);
+                            if ('username' in payload.new) setUsername(payload.new.username as string);
                         }
                     }
                 )
@@ -74,7 +77,7 @@ export const AuthButton = () => {
                     <div className="absolute right-0 top-full mt-2 w-48 bg-black border border-border-app rounded-md shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
                         <div className="p-3 border-b border-border-app">
                             <p className="text-xs text-gray-400 font-mono">Signed in as</p>
-                            <p className="text-sm font-bold truncate">{user.user_metadata.full_name || user.email}</p>
+                            <p className="text-sm font-bold truncate">{username || user.user_metadata.full_name || user.email}</p>
                         </div>
                         <Link
                             href="/profile"
