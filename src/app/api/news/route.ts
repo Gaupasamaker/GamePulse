@@ -13,7 +13,25 @@ export async function GET(request: NextRequest) {
             rssNews = await getRSSNews();
         }
 
-        const yahooNews = await getNews(query);
+        let yahooNews: any[] = [];
+
+        if (query.includes(',')) {
+            const tickers = query.split(',').map(t => t.trim());
+            // Limit to 5 requests in parallel to be safe
+            const limitedTickers = tickers.slice(0, 5);
+            const results = await Promise.all(limitedTickers.map(t => getNews(t)));
+            yahooNews = results.flat();
+
+            // Deduplicate by ID
+            const seen = new Set();
+            yahooNews = yahooNews.filter(n => {
+                if (seen.has(n.id)) return false;
+                seen.add(n.id);
+                return true;
+            });
+        } else {
+            yahooNews = await getNews(query);
+        }
 
         // Adaptar RSS al formato de la app
         const formattedRSS = rssNews.map(item => ({

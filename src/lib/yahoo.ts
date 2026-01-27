@@ -61,11 +61,12 @@ export async function getNews(query: string = 'gaming'): Promise<News[]> {
             if (!result.news || result.news.length === 0) return [];
 
             return result.news.map((item: any) => ({
-                id: item.uuid || Math.random().toString(36),
+                id: item.uuid || item.link || Math.random().toString(36),
                 headline: item.title,
                 summary: '', // Yahoo search news a veces no trae summary limpio, usamos título como fallback visual en UI
                 source: item.publisher,
                 url: item.link,
+                image: item.thumbnail?.resolutions?.[0]?.url || null,
                 datetime: item.providerPublishTime ? new Date(item.providerPublishTime).getTime() : Date.now(),
                 category: 'General',
                 related: item.relatedTickers?.join(',') || ''

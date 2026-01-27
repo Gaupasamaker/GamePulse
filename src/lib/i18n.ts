@@ -72,6 +72,9 @@ export const dictionary = {
         briefing_bearish_desc: "Sesgo negativo en el mercado. Oportunidades de compra en correcciones.",
         briefing_mixed_desc: "Volatilidad moderada sin una tendencia clara definida.",
         no_activity: "NO HAY ACTIVIDAD RECIENTE",
+        no_portfolio_news_desc: "No se encontraron posiciones en tu portfolio. Añade acciones en el simulador para ver noticias relevantes.",
+        market_tab: "MERCADO",
+        portfolio_tab: "MI PORTFOLIO",
     },
     en: {
         dashboard: "DASHBOARD",
@@ -144,5 +147,8 @@ export const dictionary = {
         briefing_bearish_desc: "Negative bias across the board. Buying opportunities in dips.",
         briefing_mixed_desc: "Moderate volatility with no clear trend defined yet.",
         no_activity: "NO RECENT ACTIVITY",
+        no_portfolio_news_desc: "No positions found in your portfolio. Add stocks to the simulator to see relevant news here.",
+        market_tab: "MARKET",
+        portfolio_tab: "MY PORTFOLIO",
     }
 };
