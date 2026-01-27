@@ -14,7 +14,7 @@ export const AuthButton = () => {
 
     useEffect(() => {
         if (user) {
-            // Check for custom avatar in profile
+            // 1. Fetch initial avatar
             const fetchAvatar = async () => {
                 const { data } = await supabase
                     .from('profiles')
@@ -25,6 +25,29 @@ export const AuthButton = () => {
                 setAvatar(data?.avatar_url || user.user_metadata.avatar_url);
             };
             fetchAvatar();
+
+            // 2. Subscribe to realtime changes
+            const channel = supabase
+                .channel('profile_changes')
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'profiles',
+                        filter: `id=eq.${user.id}`
+                    },
+                    (payload) => {
+                        if (payload.new && 'avatar_url' in payload.new) {
+                            setAvatar(payload.new.avatar_url as string);
+                        }
+                    }
+                )
+                .subscribe();
+
+            return () => {
+                supabase.removeChannel(channel);
+            };
         }
     }, [user]);
 
