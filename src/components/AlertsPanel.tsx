@@ -59,13 +59,13 @@ export const AlertsPanel: React.FC = () => {
 
     return (
         <div className="terminal-card p-4 flex flex-col gap-4 h-full">
-            <h3 className="text-sm font-mono font-bold text-gray-400 flex items-center gap-2">
+            <h3 className="text-sm font-mono font-bold text-muted-foreground-app flex items-center gap-2">
                 <Bell size={16} className="text-yellow-500" />
                 ALERTS CENTER
             </h3>
 
             {/* Form */}
-            <div className="flex flex-col gap-2 bg-white/5 p-3 rounded border border-white/10">
+            <div className="flex flex-col gap-2 bg-secondary-app p-3 rounded border border-border-app">
                 <div className="flex gap-2">
                     <select
                         className="terminal-input w-24 text-[10px]"
@@ -105,9 +105,9 @@ export const AlertsPanel: React.FC = () => {
             {/* List */}
             <div className="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar max-h-[200px]">
                 {loading ? (
-                    <div className="text-center text-gray-500 text-xs py-4">Loading alerts...</div>
+                    <div className="text-center text-muted-foreground-app text-xs py-4">Loading alerts...</div>
                 ) : alerts.length === 0 ? (
-                    <div className="text-center text-gray-500 text-xs py-4 italic">No active alerts</div>
+                    <div className="text-center text-muted-foreground-app text-xs py-4 italic">No active alerts</div>
                 ) : (
                     alerts.map(alert => {
                         const quote = quotes[alert.ticker];
@@ -119,16 +119,16 @@ export const AlertsPanel: React.FC = () => {
                         }
 
                         return (
-                            <div key={alert.id} className={`p-2 rounded border flex items-center justify-between group ${triggered ? 'bg-yellow-500/20 border-yellow-500/50' : 'bg-black/20 border-white/5'}`}>
+                            <div key={alert.id} className={`p-2 rounded border flex items-center justify-between group ${triggered ? 'bg-yellow-500/20 border-yellow-500/50' : 'bg-secondary-app border-border-app'}`}>
                                 <div className="flex flex-col min-w-0">
                                     <div className="flex items-center gap-2">
-                                        <span className="font-bold text-white text-xs">{alert.ticker}</span>
-                                        <span className="text-[10px] text-gray-500 font-mono">
+                                        <span className="font-bold text-foreground-app text-xs">{alert.ticker}</span>
+                                        <span className="text-[10px] text-muted-foreground-app font-mono">
                                             {alert.type === 'price_above' ? '>' : '<'} ${alert.value}
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-1 text-[10px]">
-                                        <span className="text-gray-400">Curr: ${currentPrice.toFixed(2)}</span>
+                                        <span className="text-muted-foreground-app">Curr: ${currentPrice.toFixed(2)}</span>
                                         {triggered && (
                                             <span className="text-yellow-400 font-bold flex items-center gap-1 animate-pulse">
                                                 <AlertTriangle size={8} /> TRIGGERED
@@ -138,7 +138,7 @@ export const AlertsPanel: React.FC = () => {
                                 </div>
                                 <button
                                     onClick={() => deleteAlert(alert.id)}
-                                    className="text-gray-600 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all px-2"
+                                    className="text-muted-foreground-app hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all px-2"
                                 >
                                     <Trash2 size={12} />
                                 </button>

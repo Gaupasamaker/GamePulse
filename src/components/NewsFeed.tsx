@@ -50,11 +50,11 @@ const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
     const imageUrl = news.image || getFallbackImage(tag);
 
     const SentimentIcon = sentiment === 'bullish' ? TrendingUp : sentiment === 'bearish' ? TrendingDown : Minus;
-    const sentimentColor = sentiment === 'bullish' ? 'text-green-500' : sentiment === 'bearish' ? 'text-red-500' : 'text-gray-500';
-    const sentimentBg = sentiment === 'bullish' ? 'bg-green-500/10 border-green-500/20' : sentiment === 'bearish' ? 'bg-red-500/10 border-red-500/20' : 'bg-gray-500/10 border-gray-500/20';
+    const sentimentColor = sentiment === 'bullish' ? 'text-green-500' : sentiment === 'bearish' ? 'text-red-500' : 'text-muted-foreground-app';
+    const sentimentBg = sentiment === 'bullish' ? 'bg-green-500/10 border-green-500/20' : sentiment === 'bearish' ? 'bg-red-500/10 border-red-500/20' : 'bg-muted-app border-border-app';
 
     return (
-        <div className="terminal-card p-4 flex gap-4 group hover:bg-white/5 transition-colors">
+        <div className="terminal-card p-4 flex gap-4 group hover:bg-secondary-app transition-colors">
             {/* Image Thumbnail */}
             <div className="hidden sm:block w-24 h-24 flex-shrink-0 rounded overflow-hidden border border-border-app/50 relative">
                 <a href={news.url} target="_blank" rel="noopener noreferrer" className="block w-full h-full cursor-pointer">
@@ -85,7 +85,7 @@ const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
                                 {news.source}
                             </span>
                         )}
-                        <span className="flex items-center gap-1 text-gray-500 whitespace-nowrap">
+                        <span className="flex items-center gap-1 text-muted-foreground-app whitespace-nowrap">
                             <Clock size={12} />
                             {isValidDate ? formatDistanceToNow(date, { addSuffix: true, locale: dateLocale }) : ''}
                         </span>
@@ -108,19 +108,19 @@ const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
                 </div>
 
                 <a href={news.url} target="_blank" rel="noopener noreferrer" className="block">
-                    <h3 className="text-sm font-bold leading-tight group-hover:text-blue-400 transition-colors line-clamp-2">
+                    <h3 className="text-sm font-bold leading-tight group-hover:text-primary-app transition-colors line-clamp-2">
                         {news.headline}
                     </h3>
                 </a>
 
-                <p className="text-xs text-gray-500 line-clamp-2 italic">
+                <p className="text-xs text-muted-foreground-app line-clamp-2 italic">
                     {news.summary}
                 </p>
 
                 <div className="flex items-center justify-between mt-auto pt-2 border-t border-border-app/50">
                     <div className="flex gap-1 overflow-hidden">
                         {news.related && news.related.split(',').slice(0, 3).map((ticker: string) => (
-                            <span key={ticker} className="text-[9px] text-gray-400 font-mono">#{ticker}</span>
+                            <span key={ticker} className="text-[9px] text-muted-foreground-app font-mono">#{ticker}</span>
                         ))}
                     </div>
                     <a
@@ -218,12 +218,12 @@ export const NewsFeed: React.FC<{ ticker?: string; query?: string; categoryLabel
 
                 {/* Tabs - Only show if not in specific ticker view */}
                 {!ticker && (
-                    <div className="flex bg-black/40 rounded-lg p-1 border border-border-app/30">
+                    <div className="flex bg-secondary-app rounded-lg p-1 border border-border-app/30">
                         <button
                             onClick={() => setActiveTab('market')}
                             className={`px-3 py-1 rounded text-[10px] font-mono font-bold transition-all ${activeTab === 'market'
                                 ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 shadow-[0_0_10px_rgba(59,130,246,0.2)]'
-                                : 'text-gray-500 hover:text-gray-300'
+                                : 'text-muted-foreground-app hover:text-foreground-app'
                                 }`}
                         >
                             {t('market_tab')}
@@ -232,7 +232,7 @@ export const NewsFeed: React.FC<{ ticker?: string; query?: string; categoryLabel
                             onClick={() => setActiveTab('portfolio')}
                             className={`px-3 py-1 rounded text-[10px] font-mono font-bold transition-all flex items-center gap-1 ${activeTab === 'portfolio'
                                 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
-                                : 'text-gray-500 hover:text-gray-300'
+                                : 'text-muted-foreground-app hover:text-foreground-app'
                                 }`}
                         >
                             {t('portfolio_tab')}
@@ -245,7 +245,7 @@ export const NewsFeed: React.FC<{ ticker?: string; query?: string; categoryLabel
                 {news.length > 0 ? (
                     news.map((item) => <NewsCard key={item.id} news={item} />)
                 ) : (
-                    <div className="text-center p-8 border border-dashed border-border-app rounded-md text-gray-500 font-mono text-xs flex flex-col items-center gap-2 max-w-md mx-auto">
+                    <div className="text-center p-8 border border-dashed border-border-app rounded-md text-muted-foreground-app font-mono text-xs flex flex-col items-center gap-2 max-w-md mx-auto">
                         <Layout size={24} className="opacity-50" />
                         {activeTab === 'portfolio' && portfolioSymbols.length === 0 ? (
                             <span>

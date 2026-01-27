@@ -37,11 +37,11 @@ export default function AdminPage() {
         <div className="p-6 max-w-6xl mx-auto flex flex-col gap-8">
             <section className="border-l-2 border-emerald-500 pl-4 py-2 flex justify-between items-end">
                 <div>
-                    <h1 className="text-2xl font-bold font-mono text-white tracking-tighter flex items-center gap-3">
+                    <h1 className="text-2xl font-bold font-mono text-foreground-app tracking-tighter flex items-center gap-3">
                         <Shield className="text-emerald-500" />
                         {t('admin_panel')}
                     </h1>
-                    <p className="text-sm text-gray-500 font-mono mt-1">
+                    <p className="text-sm text-muted-foreground-app font-mono mt-1">
                         Gestión del universo de empresas gaming y categorización.
                     </p>
                 </div>
@@ -53,22 +53,22 @@ export default function AdminPage() {
             <div className="terminal-card overflow-hidden">
                 <table className="w-full text-left font-mono text-xs">
                     <thead>
-                        <tr className="border-b border-border-app bg-black/40">
-                            <th className="px-4 py-3 font-semibold text-gray-500">ID / {t('ticker')}</th>
-                            <th className="px-4 py-3 font-semibold text-gray-500">Company Name</th>
-                            <th className="px-4 py-3 font-semibold text-gray-500">{t('category')}</th>
-                            <th className="px-4 py-3 font-semibold text-gray-500">Region</th>
-                            <th className="px-4 py-3 font-semibold text-right text-gray-500">Status</th>
-                            <th className="px-4 py-3 font-semibold text-center text-gray-500">Actions</th>
+                        <tr className="border-b border-border-app bg-secondary-app">
+                            <th className="px-4 py-3 font-semibold text-muted-foreground-app">ID / {t('ticker')}</th>
+                            <th className="px-4 py-3 font-semibold text-muted-foreground-app">Company Name</th>
+                            <th className="px-4 py-3 font-semibold text-muted-foreground-app">{t('category')}</th>
+                            <th className="px-4 py-3 font-semibold text-muted-foreground-app">Region</th>
+                            <th className="px-4 py-3 font-semibold text-right text-muted-foreground-app">Status</th>
+                            <th className="px-4 py-3 font-semibold text-center text-muted-foreground-app">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-border-app/50">
                         {companies.map((company) => (
-                            <tr key={company.id} className="hover:bg-white/5 transition-colors">
+                            <tr key={company.id} className="hover:bg-secondary-app transition-colors">
                                 <td className="px-4 py-4">
                                     <div className="flex flex-col">
-                                        <span className="text-white font-bold">{company.ticker}</span>
-                                        <span className="text-[9px] text-gray-500">{company.exchange}</span>
+                                        <span className="text-foreground-app font-bold">{company.ticker}</span>
+                                        <span className="text-[9px] text-muted-foreground-app">{company.exchange}</span>
                                     </div>
                                 </td>
                                 <td className="px-4 py-4">
@@ -79,7 +79,7 @@ export default function AdminPage() {
                                             onChange={e => setEditForm(prev => prev ? { ...prev, name: e.target.value } : null)}
                                         />
                                     ) : (
-                                        <span className="text-gray-300">{company.name}</span>
+                                        <span className="text-muted-foreground-app">{company.name}</span>
                                     )}
                                 </td>
                                 <td className="px-4 py-4">
@@ -92,8 +92,8 @@ export default function AdminPage() {
                                 </td>
                                 <td className="px-4 py-4">
                                     <div className="flex items-center gap-2">
-                                        <Globe size={12} className="text-gray-500" />
-                                        <span className="text-gray-400">{company.region}</span>
+                                        <Globe size={12} className="text-muted-foreground-app" />
+                                        <span className="text-muted-foreground-app">{company.region}</span>
                                     </div>
                                 </td>
                                 <td className="px-4 py-4 text-right">
@@ -115,7 +115,7 @@ export default function AdminPage() {
                                             </>
                                         ) : (
                                             <>
-                                                <button onClick={() => startEdit(company)} className="p-1.5 text-gray-400 hover:text-white hover:bg-white/5 rounded">
+                                                <button onClick={() => startEdit(company)} className="p-1.5 text-muted-foreground-app hover:text-foreground-app hover:bg-secondary-app rounded">
                                                     <Edit2 size={16} />
                                                 </button>
                                                 <button onClick={() => deleteCompany(company.id)} className="p-1.5 text-gray-500 hover:text-rose-500 hover:bg-rose-500/5 rounded">
@@ -131,11 +131,11 @@ export default function AdminPage() {
                 </table>
             </div>
 
-            <div className="terminal-card border-dashed p-6 bg-black/40">
-                <h3 className="text-xs font-mono font-bold text-gray-400 mb-2 uppercase flex items-center gap-2">
+            <div className="terminal-card border-dashed p-6 bg-secondary-app/50">
+                <h3 className="text-xs font-mono font-bold text-muted-foreground-app mb-2 uppercase flex items-center gap-2">
                     <Shield size={14} className="text-blue-500" /> Administrative_Notice
                 </h3>
-                <p className="text-[10px] text-gray-500 font-mono leading-relaxed">
+                <p className="text-[10px] text-muted-foreground-app font-mono leading-relaxed">
                     Los cambios realizados aquí en el MVP son temporales (estado local de React).
                     Para persistencia real, configure un adaptador de Supabase/Firebase en [lib/db_adapter.ts].
                     Todas las entidades deben pertenecer exclusivamente al sector de videojuegos.

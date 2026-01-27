@@ -92,7 +92,7 @@ export default function ProfilePage() {
 
     if (!user) {
         return (
-            <div className="p-8 flex justify-center text-gray-500 font-mono">
+            <div className="p-8 flex justify-center text-muted-foreground-app font-mono">
                 <Loader2 className="animate-spin" /> Cargando sesión...
             </div>
         );
@@ -100,7 +100,7 @@ export default function ProfilePage() {
 
     if (loading) {
         return (
-            <div className="p-8 flex justify-center text-gray-500 font-mono">
+            <div className="p-8 flex justify-center text-muted-foreground-app font-mono">
                 <Loader2 className="animate-spin" /> Cargando perfil...
             </div>
         );
@@ -108,7 +108,7 @@ export default function ProfilePage() {
 
     return (
         <div className="max-w-4xl mx-auto p-4 md:p-8 flex flex-col gap-8">
-            <h1 className="text-3xl font-bold font-mono text-white tracking-tighter border-b border-gray-800 pb-4">
+            <h1 className="text-3xl font-bold font-mono text-foreground-app tracking-tighter border-b border-border-app pb-4">
                 EDITAR PERFIL
             </h1>
 
@@ -116,7 +116,7 @@ export default function ProfilePage() {
                 {/* Columna Izquierda: Formulario */}
                 <div className="flex flex-col gap-6">
                     <div className="terminal-card p-6">
-                        <label className="block text-xs font-mono text-gray-400 mb-2 uppercase">Gamer Tag (Username)</label>
+                        <label className="block text-xs font-mono text-muted-foreground-app mb-2 uppercase">Gamer Tag (Username)</label>
                         <div className="flex gap-2 items-center">
                             <span className="text-blue-500 font-bold">@</span>
                             <input
@@ -127,28 +127,28 @@ export default function ProfilePage() {
                                 placeholder="username"
                             />
                         </div>
-                        <p className="text-[10px] text-gray-500 mt-2 font-mono">
+                        <p className="text-[10px] text-muted-foreground-app mt-2 font-mono">
                             Este nombre aparecerá en el Leaderboard global.
                         </p>
                     </div>
 
                     <div className="terminal-card p-6">
-                        <label className="block text-xs font-mono text-gray-400 mb-4 uppercase">Avatar Preview</label>
+                        <label className="block text-xs font-mono text-muted-foreground-app mb-4 uppercase">Avatar Preview</label>
                         <div className="flex items-center gap-4">
-                            <div className="w-24 h-24 rounded-full border-2 border-blue-500 overflow-hidden bg-black/50 relative">
+                            <div className="w-24 h-24 rounded-full border-2 border-primary-app overflow-hidden bg-secondary-app relative">
                                 <img src={avatarUrl} alt="Avatar Preview" className="w-full h-full object-cover" />
                             </div>
                             <div className="flex-1">
-                                <p className="text-white font-mono font-bold text-lg">{username || 'Player'}</p>
-                                <p className="text-gray-500 text-xs font-mono">Nivel 1 • Inversor Novato</p>
+                                <p className="text-foreground-app font-mono font-bold text-lg">{username || 'Player'}</p>
+                                <p className="text-muted-foreground-app text-xs font-mono">Nivel 1 • Inversor Novato</p>
                             </div>
                         </div>
                     </div>
 
                     {message && (
                         <div className={`p-4 border rounded font-mono text-sm flex items-center gap-2 ${message.type === 'success'
-                                ? 'bg-emerald-900/10 border-emerald-500/30 text-emerald-400'
-                                : 'bg-rose-900/10 border-rose-500/30 text-rose-400'
+                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                            : 'bg-rose-500/10 border-rose-500/30 text-rose-400'
                             }`}>
                             {message.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
                             {message.text}
@@ -167,7 +167,7 @@ export default function ProfilePage() {
 
                 {/* Columna Derecha: Selector de Avatares */}
                 <div className="terminal-card p-6">
-                    <h3 className="text-sm font-mono font-bold text-gray-400 mb-4 uppercase flex items-center gap-2">
+                    <h3 className="text-sm font-mono font-bold text-muted-foreground-app mb-4 uppercase flex items-center gap-2">
                         <User size={16} className="text-purple-400" />
                         Selecciona tu Avatar
                     </h3>
@@ -178,8 +178,8 @@ export default function ProfilePage() {
                                 key={index}
                                 onClick={() => setAvatarUrl(url)}
                                 className={`aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${avatarUrl === url
-                                        ? 'border-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]'
-                                        : 'border-transparent hover:border-gray-600 bg-white/5'
+                                    ? 'border-primary-app shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+                                    : 'border-transparent hover:border-gray-600 bg-secondary-app'
                                     }`}
                             >
                                 <img src={url} alt={`Avatar ${index}`} className="w-full h-full object-cover" />
@@ -187,8 +187,8 @@ export default function ProfilePage() {
                         ))}
                     </div>
 
-                    <div className="mt-6 pt-6 border-t border-gray-800">
-                        <label className="block text-xs font-mono text-gray-500 mb-2">O pega una URL personalizada:</label>
+                    <div className="mt-6 pt-6 border-t border-border-app">
+                        <label className="block text-xs font-mono text-muted-foreground-app mb-2">O pega una URL personalizada:</label>
                         <input
                             type="text"
                             value={avatarUrl}

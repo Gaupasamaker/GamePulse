@@ -14,6 +14,7 @@ import {
 } from 'chart.js';
 import { SEED_COMPANIES } from '@/data/companies';
 import { useLanguage } from '@/providers/LanguageProvider';
+import { useTheme } from '@/providers/ThemeProvider';
 import { Loader2 } from 'lucide-react';
 
 ChartJS.register(
@@ -28,6 +29,7 @@ ChartJS.register(
 
 export const ComparisonChart: React.FC = () => {
     const { t } = useLanguage();
+    const { theme } = useTheme();
     const [tickerA, setTickerA] = useState('SONY');
     const [tickerB, setTickerB] = useState('NTDOY');
     const [dataA, setDataA] = useState<any[]>([]);
@@ -105,7 +107,7 @@ export const ComparisonChart: React.FC = () => {
         plugins: {
             legend: {
                 position: 'top' as const,
-                labels: { color: '#9ca3af', font: { family: 'monospace' } }
+                labels: { color: theme === 'dark' ? '#9ca3af' : '#6b7280', font: { family: 'monospace' } }
             },
             tooltip: {
                 callbacks: {
@@ -117,13 +119,13 @@ export const ComparisonChart: React.FC = () => {
         },
         scales: {
             x: {
-                grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                ticks: { color: '#6b7280', maxTicksLimit: 8 }
+                grid: { color: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)' },
+                ticks: { color: theme === 'dark' ? '#6b7280' : '#4b5563', maxTicksLimit: 8 }
             },
             y: {
-                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                grid: { color: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)' },
                 ticks: {
-                    color: '#6b7280',
+                    color: theme === 'dark' ? '#6b7280' : '#4b5563',
                     callback: function (value: any) { return value + '%' }
                 }
             }
@@ -144,7 +146,7 @@ export const ComparisonChart: React.FC = () => {
                     </select>
                 </div>
 
-                <div className="flex items-center justify-center text-gray-500 font-bold font-mono">VS</div>
+                <div className="flex items-center justify-center text-muted-foreground-app font-bold font-mono">VS</div>
 
                 <div className="flex-1 flex flex-col gap-1">
                     <label className="text-[10px] text-emerald-400 font-mono font-bold">ASSET B</label>
@@ -167,11 +169,11 @@ export const ComparisonChart: React.FC = () => {
                 {dataA.length > 0 && dataB.length > 0 ? (
                     <Line options={options} data={chartData} />
                 ) : (
-                    <div className="text-gray-500 font-mono text-sm">SELECT DATA TO COMPARE</div>
+                    <div className="text-muted-foreground-app font-mono text-sm">SELECT DATA TO COMPARE</div>
                 )}
             </div>
 
-            <p className="text-[10px] text-gray-500 font-mono text-center">
+            <p className="text-[10px] text-muted-foreground-app font-mono text-center">
                 * {t('normalized_performance')}
             </p>
         </div>

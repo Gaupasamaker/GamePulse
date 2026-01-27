@@ -17,6 +17,7 @@ import {
 import { Line, Bar } from 'react-chartjs-2';
 import { Loader2, TrendingUp, BarChart3 } from 'lucide-react';
 import { useLanguage } from '@/providers/LanguageProvider';
+import { useTheme } from '@/providers/ThemeProvider';
 
 ChartJS.register(
     CategoryScale,
@@ -36,6 +37,7 @@ interface CompanyChartProps {
 
 export const CompanyChart: React.FC<CompanyChartProps> = ({ ticker }) => {
     const { t } = useLanguage();
+    const { theme } = useTheme();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
     const [range, setRange] = useState('1M');
@@ -149,24 +151,26 @@ export const CompanyChart: React.FC<CompanyChartProps> = ({ ticker }) => {
             tooltip: {
                 mode: 'index',
                 intersect: false,
-                backgroundColor: '#0a0a0b',
+                backgroundColor: theme === 'dark' ? '#0a0a0b' : '#ffffff',
+                titleColor: theme === 'dark' ? '#ffffff' : '#000000',
+                bodyColor: theme === 'dark' ? '#ffffff' : '#000000',
                 titleFont: { family: 'JetBrains Mono' },
                 bodyFont: { family: 'JetBrains Mono' },
-                borderColor: '#27272a',
+                borderColor: theme === 'dark' ? '#27272a' : '#e4e4e7',
                 borderWidth: 1,
             },
         },
         scales: {
             x: {
                 grid: { display: false },
-                ticks: { color: '#71717a', font: { size: 10, family: 'JetBrains Mono' } },
+                ticks: { color: theme === 'dark' ? '#71717a' : '#a1a1aa', font: { size: 10, family: 'JetBrains Mono' } },
             },
             y: {
                 type: 'linear' as const,
                 display: true,
                 position: 'left' as const,
-                grid: { color: 'rgba(39, 39, 42, 0.5)' },
-                ticks: { color: '#71717a', font: { size: 10, family: 'JetBrains Mono' } },
+                grid: { color: theme === 'dark' ? 'rgba(39, 39, 42, 0.5)' : 'rgba(228, 228, 231, 0.5)' },
+                ticks: { color: theme === 'dark' ? '#71717a' : '#a1a1aa', font: { size: 10, family: 'JetBrains Mono' } },
             },
             y1: {
                 type: 'linear' as const,
@@ -185,12 +189,12 @@ export const CompanyChart: React.FC<CompanyChartProps> = ({ ticker }) => {
         <div className="flex flex-col gap-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
                 {/* Range Selector */}
-                <div className="flex items-center gap-1 bg-black/20 p-1 rounded border border-border-app">
+                <div className="flex items-center gap-1 bg-secondary-app p-1 rounded border border-border-app">
                     {['1D', '5D', '1M', '6M', '1Y'].map((r) => (
                         <button
                             key={r}
                             onClick={() => setRange(r)}
-                            className={`px-3 py-1 rounded font-mono text-[10px] transition-all ${range === r ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-white'
+                            className={`px-3 py-1 rounded font-mono text-[10px] transition-all ${range === r ? 'bg-primary-app text-primary-foreground-app' : 'text-muted-foreground-app hover:text-foreground-app'
                                 }`}
                         >
                             {r}
@@ -202,14 +206,14 @@ export const CompanyChart: React.FC<CompanyChartProps> = ({ ticker }) => {
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => setShowSMA(!showSMA)}
-                        className={`flex items-center gap-1 px-2 py-1 rounded border text-[10px] font-mono transition-colors ${showSMA ? 'bg-amber-500/10 border-amber-500 text-amber-500' : 'border-border-app text-gray-500 hover:text-white'
+                        className={`flex items-center gap-1 px-2 py-1 rounded border text-[10px] font-mono transition-colors ${showSMA ? 'bg-amber-500/10 border-amber-500 text-amber-500' : 'border-border-app text-muted-foreground-app hover:text-foreground-app'
                             }`}
                     >
                         <TrendingUp size={12} /> {t('show_sma')}
                     </button>
                     <button
                         onClick={() => setShowVolume(!showVolume)}
-                        className={`flex items-center gap-1 px-2 py-1 rounded border text-[10px] font-mono transition-colors ${showVolume ? 'bg-purple-500/10 border-purple-500 text-purple-500' : 'border-border-app text-gray-500 hover:text-white'
+                        className={`flex items-center gap-1 px-2 py-1 rounded border text-[10px] font-mono transition-colors ${showVolume ? 'bg-purple-500/10 border-purple-500 text-purple-500' : 'border-border-app text-muted-foreground-app hover:text-foreground-app'
                             }`}
                     >
                         <BarChart3 size={12} /> {t('show_volume')}
@@ -219,13 +223,13 @@ export const CompanyChart: React.FC<CompanyChartProps> = ({ ticker }) => {
 
             <div className="h-[300px] w-full relative">
                 {loading ? (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/5 rounded-lg border border-border-app border-dashed">
+                    <div className="absolute inset-0 flex items-center justify-center bg-muted-app/20 rounded-lg border border-border-app border-dashed">
                         <Loader2 className="animate-spin text-blue-500" size={24} />
                     </div>
                 ) : data ? (
                     <Line options={options} data={data} />
                 ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/5 rounded-lg border border-border-app border-dashed text-gray-500 font-mono text-xs gap-2">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-muted-app/20 rounded-lg border border-border-app border-dashed text-muted-foreground-app font-mono text-xs gap-2">
                         <span className="text-xl">📉</span>
                         <span>DATOS NO DISPONIBLES</span>
                         <span className="text-[10px] opacity-70 max-w-[200px] text-center">

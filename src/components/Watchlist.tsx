@@ -22,7 +22,7 @@ export const Watchlist: React.FC = () => {
         return (
             <div className="flex flex-col items-center justify-center p-12 terminal-card min-h-[400px]">
                 <Loader2 className="animate-spin text-blue-500 mb-4" size={32} />
-                <span className="font-mono text-sm text-gray-400">{t('loading_market')}</span>
+                <span className="font-mono text-sm text-muted-foreground-app">{t('loading_market')}</span>
             </div>
         );
     }
@@ -30,12 +30,12 @@ export const Watchlist: React.FC = () => {
     return (
         <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
-                <h2 className="text-sm font-mono font-bold text-gray-400 flex items-center gap-2">
+                <h2 className="text-sm font-mono font-bold text-muted-foreground-app flex items-center gap-2">
                     <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
                     {t('watchlist')}
                 </h2>
                 {lastUpdated && (
-                    <span className="text-[10px] font-mono text-gray-500">
+                    <span className="text-[10px] font-mono text-muted-foreground-app">
                         {t('last_refresh')} {lastUpdated.toLocaleTimeString()}
                     </span>
                 )}
@@ -44,13 +44,13 @@ export const Watchlist: React.FC = () => {
             <div className="terminal-card overflow-x-auto">
                 <table className="w-full text-left font-mono text-xs">
                     <thead>
-                        <tr className="border-b border-border-app bg-black/20">
-                            <th className="px-4 py-3 font-semibold text-gray-500">{t('ticker')}</th>
+                        <tr className="border-b border-border-app bg-secondary-app/50">
+                            <th className="px-4 py-3 font-semibold text-muted-foreground-app">{t('ticker')}</th>
                             <th className="px-4 py-3 font-semibold text-gray-500">COMPANY</th>
-                            <th className="px-4 py-3 font-semibold text-right text-gray-500">{t('price')}</th>
-                            <th className="px-4 py-3 font-semibold text-right text-gray-500">{t('change_1d')}</th>
-                            <th className="px-4 py-3 font-semibold hidden md:table-cell text-gray-500">{t('category')}</th>
-                            <th className="px-4 py-3 font-semibold text-center text-gray-500">{t('action')}</th>
+                            <th className="px-4 py-3 font-semibold text-right text-muted-foreground-app">{t('price')}</th>
+                            <th className="px-4 py-3 font-semibold text-right text-muted-foreground-app">{t('change_1d')}</th>
+                            <th className="px-4 py-3 font-semibold hidden md:table-cell text-muted-foreground-app">{t('category')}</th>
+                            <th className="px-4 py-3 font-semibold text-center text-muted-foreground-app">{t('action')}</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-border-app/50">
@@ -63,25 +63,25 @@ export const Watchlist: React.FC = () => {
                                 <tr key={company.id} className="hover:bg-blue-500/5 transition-colors group">
                                     <td className="px-4 py-3">
                                         <div className="flex flex-col">
-                                            <span className="text-white font-bold">{company.name}</span>
-                                            <span className="text-[10px] text-gray-500 uppercase">{company.region}</span>
+                                            <span className="text-foreground-app font-bold">{company.name}</span>
+                                            <span className="text-[10px] text-muted-foreground-app uppercase">{company.region}</span>
                                         </div>
                                     </td>
                                     <td className="px-4 py-3">
-                                        <span className="bg-white/5 px-1.5 py-0.5 rounded text-[10px] text-gray-300">
+                                        <span className="bg-secondary-app px-1.5 py-0.5 rounded text-[10px] text-muted-foreground-app">
                                             {company.ticker}
                                         </span>
                                     </td>
                                     <td className="px-4 py-3 text-right">
                                         {quote && typeof quote.price === 'number' ? (
-                                            <span className="text-white font-bold">${quote.price.toFixed(2)}</span>
+                                            <span className="text-foreground-app font-bold">${quote.price.toFixed(2)}</span>
                                         ) : (
                                             <span className="text-gray-600">--</span>
                                         )}
                                     </td>
                                     <td className={cn(
                                         "px-4 py-3 text-right font-bold",
-                                        isUp ? "text-emerald-400" : isDown ? "text-rose-500" : "text-gray-500"
+                                        isUp ? "text-emerald-400" : isDown ? "text-rose-500" : "text-muted-foreground-app"
                                     )}>
                                         {quote ? (
                                             <div className="flex items-center justify-end gap-1">
@@ -89,7 +89,7 @@ export const Watchlist: React.FC = () => {
                                                 {typeof quote.changePercent === 'number' ? quote.changePercent.toFixed(2) : '0.00'}%
                                             </div>
                                         ) : (
-                                            <span className="text-gray-600">--</span>
+                                            <span className="text-muted-foreground-app">--</span>
                                         )}
                                     </td>
                                     <td className="px-4 py-3 hidden md:table-cell">
@@ -103,7 +103,7 @@ export const Watchlist: React.FC = () => {
                                     <td className="px-4 py-3 text-center">
                                         <Link
                                             href={`/company/${company.ticker}`}
-                                            className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-border-app hover:border-blue-500/50 hover:bg-blue-500/10 text-gray-500 hover:text-blue-500 transition-all"
+                                            className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-border-app hover:border-blue-500/50 hover:bg-blue-500/10 text-muted-foreground-app hover:text-blue-500 transition-all"
                                         >
                                             <ArrowRight size={14} />
                                         </Link>

@@ -61,7 +61,7 @@ export const EventsCalendar: React.FC = () => {
             case 'High': return 'text-rose-500 bg-rose-500/10 border-rose-500/20';
             case 'Medium': return 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20';
             case 'Low': return 'text-blue-500 bg-blue-500/10 border-blue-500/20';
-            default: return 'text-gray-500';
+            default: return 'text-muted-foreground-app';
         }
     };
 
@@ -79,13 +79,13 @@ export const EventsCalendar: React.FC = () => {
                 ) : (
                     <div className="flex flex-col gap-3">
                         {events.filter(e => e.type === 'earnings').map(e => (
-                            <div key={e.id} className="flex items-center justify-between p-3 bg-black/20 border border-border-app rounded hover:border-emerald-500/50 transition-colors">
+                            <div key={e.id} className="flex items-center justify-between p-3 bg-secondary-app border border-border-app rounded hover:border-emerald-500/50 transition-colors">
                                 <div className="flex flex-col">
                                     <div className="flex items-center gap-2">
-                                        <span className="font-bold text-white font-mono">{e.ticker}</span>
-                                        <span className="text-[10px] text-gray-500">{formatDate(e.date)}</span>
+                                        <span className="font-bold text-foreground-app font-mono">{e.ticker}</span>
+                                        <span className="text-[10px] text-muted-foreground-app">{formatDate(e.date)}</span>
                                     </div>
-                                    <span className="text-xs text-gray-400">{e.title}</span>
+                                    <span className="text-xs text-muted-foreground-app">{e.title}</span>
                                 </div>
                                 <div className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border ${getImpactColor(e.impact)}`}>
                                     {e.impact} {t('impact').split(' ')[0]}
@@ -105,10 +105,10 @@ export const EventsCalendar: React.FC = () => {
 
                 <div className="flex flex-col gap-3">
                     {events.filter(e => e.type === 'release').map(e => (
-                        <div key={e.id} className="flex items-center justify-between p-3 bg-black/20 border border-border-app rounded hover:border-blue-500/50 transition-colors">
+                        <div key={e.id} className="flex items-center justify-between p-3 bg-secondary-app border border-border-app rounded hover:border-blue-500/50 transition-colors">
                             <div className="flex flex-col">
-                                <span className="font-bold text-white text-sm">{e.title}</span>
-                                <span className="text-[10px] text-gray-500 font-mono">{formatDate(e.date)}</span>
+                                <span className="font-bold text-foreground-app text-sm">{e.title}</span>
+                                <span className="text-[10px] text-muted-foreground-app font-mono">{formatDate(e.date)}</span>
                             </div>
                             <div className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border ${getImpactColor(e.impact)}`}>
                                 {e.impact} INT

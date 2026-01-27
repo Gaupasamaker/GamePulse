@@ -53,7 +53,7 @@ export const ActivityFeed: React.FC = () => {
 
     return (
         <div className="terminal-card p-4 h-full flex flex-col">
-            <h3 className="text-sm font-mono font-bold text-gray-400 mb-4 flex items-center gap-2 uppercase tracking-wider">
+            <h3 className="text-sm font-mono font-bold text-muted-foreground-app mb-4 flex items-center gap-2 uppercase tracking-wider">
                 <Activity size={16} className="text-purple-400" />
                 Live Market Feed
             </h3>
@@ -62,25 +62,25 @@ export const ActivityFeed: React.FC = () => {
                 {loading ? (
                     <div className="animate-pulse flex flex-col gap-3">
                         {[1, 2, 3].map(i => (
-                            <div key={i} className="h-12 bg-white/5 rounded border border-white/5" />
+                            <div key={i} className="h-12 bg-muted-app rounded border border-border-app" />
                         ))}
                     </div>
                 ) : activities.length === 0 ? (
-                    <div className="text-center text-gray-500 py-8 text-xs font-mono">
+                    <div className="text-center text-muted-foreground-app py-8 text-xs font-mono">
                         {t('no_activity')}
                     </div>
                 ) : (
                     activities.map(activity => (
-                        <div key={activity.id} className="p-3 bg-black/20 border border-white/5 rounded hover:bg-white/5 transition-colors group">
+                        <div key={activity.id} className="p-3 bg-secondary-app border border-border-app rounded hover:bg-muted-app transition-colors group">
                             <div className="flex items-start gap-3">
-                                <div className={`p-2 rounded-full bg-white/5 border border-white/10 group-hover:border-white/20 transition-colors`}>
+                                <div className={`p-2 rounded-full bg-muted-app border border-border-app group-hover:border-foreground-app/20 transition-colors`}>
                                     {getIcon(activity.type)}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm text-gray-200 font-mono leading-tight">
+                                    <p className="text-sm text-foreground-app font-mono leading-tight">
                                         {activity.description}
                                     </p>
-                                    <span className="text-[10px] text-gray-500 font-mono mt-1 block">
+                                    <span className="text-[10px] text-muted-foreground-app font-mono mt-1 block">
                                         {formatDistanceToNow(new Date(activity.created_at), {
                                             addSuffix: true,
                                             locale: language === 'es' ? es : enUS

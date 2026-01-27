@@ -17,17 +17,17 @@ export default function Home() {
       {/* Hero / Header Section */}
       <section className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-l-2 border-blue-600 pl-4 py-2">
         <div>
-          <h1 className="text-2xl font-bold font-mono text-white tracking-tighter">
+          <h1 className="text-2xl font-bold font-mono text-foreground-app tracking-tighter">
             {t('market_overview')}
           </h1>
-          <p className="text-sm text-gray-500 font-mono mt-1">
+          <p className="text-sm text-muted-foreground-app font-mono mt-1">
             Real-time monitoring of the global gaming ecosystem.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={14} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground-app" size={14} />
             <input
               type="text"
               placeholder={t('search_ticker')}

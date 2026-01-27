@@ -25,6 +25,8 @@ export const metadata: Metadata = {
 import { LanguageProvider } from "@/providers/LanguageProvider";
 import { AuthProvider } from "@/providers/AuthProvider";
 
+import { ThemeProvider } from "@/providers/ThemeProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,19 +34,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className="antialiased min-h-screen flex flex-col">
-        <LanguageProvider>
-          <AuthProvider>
-            <Disclaimer />
-            <Header />
-            <main className="flex-1 overflow-y-auto">
-              {children}
-            </main>
-            <footer className="border-t border-border-app px-6 py-4 text-center text-[10px] font-mono text-gray-600">
-              GAMEPULSE_BETA // 2026 // NO_FINANCIAL_ADVICE
-            </footer>
-          </AuthProvider>
-        </LanguageProvider>
+      <body className="antialiased min-h-screen flex flex-col bg-background-app text-foreground-app font-mono-app transition-colors duration-300">
+        <ThemeProvider defaultTheme="dark" storageKey="gamepulse-theme">
+          <LanguageProvider>
+            <AuthProvider>
+              <Disclaimer />
+              <Header />
+              <main className="flex-1 overflow-y-auto">
+                {children}
+              </main>
+              <footer className="border-t border-border-app px-6 py-4 text-center text-[10px] font-mono text-muted-foreground-app">
+                GAMEPULSE_BETA // 2026 // NO_FINANCIAL_ADVICE
+              </footer>
+            </AuthProvider>
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

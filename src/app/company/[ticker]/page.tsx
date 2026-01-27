@@ -27,7 +27,7 @@ export default function CompanyPage() {
         return (
             <div className="p-12 text-center flex flex-col items-center gap-4">
                 <AlertCircle size={48} className="text-rose-500" />
-                <h1 className="text-xl font-mono text-white">{t('not_found')}</h1>
+                <h1 className="text-xl font-mono text-foreground-app">{t('not_found')}</h1>
                 <Link href="/" className="terminal-btn terminal-btn-primary">
                     <ArrowLeft size={16} /> {t('return_dashboard')}
                 </Link>
@@ -41,10 +41,10 @@ export default function CompanyPage() {
     return (
         <div className="p-6 max-w-7xl mx-auto flex flex-col gap-8">
             {/* Breadcrumbs */}
-            <nav className="flex items-center gap-2 text-[10px] font-mono text-gray-500 mb-2">
+            <nav className="flex items-center gap-2 text-[10px] font-mono text-muted-foreground-app mb-2">
                 <Link href="/" className="hover:text-blue-500">{t('dashboard')}</Link>
                 <ChevronRight size={10} />
-                <span className="text-gray-300">{company.ticker}</span>
+                <span className="text-muted-foreground-app/80">{company.ticker}</span>
             </nav>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -53,18 +53,18 @@ export default function CompanyPage() {
                     <section className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-l-2 border-emerald-500 pl-4 py-2">
                         <div>
                             <div className="flex items-center gap-3">
-                                <h1 className="text-3xl font-bold font-mono text-white tracking-tighter">
+                                <h1 className="text-3xl font-bold font-mono text-foreground-app tracking-tighter">
                                     {company.name}
                                 </h1>
-                                <span className="bg-white/5 opacity-50 px-2 py-1 rounded text-xs font-mono">
+                                <span className="bg-secondary-app opacity-50 px-2 py-1 rounded text-xs font-mono">
                                     {company.exchange}:{company.ticker}
                                 </span>
                             </div>
                             <div className="flex items-center gap-4 mt-2">
-                                <span className="flex items-center gap-1 text-[10px] text-gray-400 font-mono uppercase">
+                                <span className="flex items-center gap-1 text-[10px] text-muted-foreground-app font-mono uppercase">
                                     <Globe size={12} /> {company.region}
                                 </span>
-                                <span className="flex items-center gap-1 text-[10px] text-gray-400 font-mono uppercase">
+                                <span className="flex items-center gap-1 text-[10px] text-muted-foreground-app font-mono uppercase">
                                     <Tag size={12} /> {company.category}
                                 </span>
                             </div>
@@ -73,18 +73,18 @@ export default function CompanyPage() {
                         <div className="text-right">
                             {quote ? (
                                 <div className="flex flex-col">
-                                    <span className="text-4xl font-mono font-bold text-white leading-none">
+                                    <span className="text-4xl font-mono font-bold text-foreground-app leading-none">
                                         ${typeof quote.price === 'number' ? quote.price.toFixed(2) : '--'}
                                     </span>
                                     <div className={cn(
                                         "text-sm font-mono font-bold mt-1",
-                                        isUp ? "text-emerald-400" : isDown ? "text-rose-500" : "text-gray-500"
+                                        isUp ? "text-emerald-400" : isDown ? "text-rose-500" : "text-muted-foreground-app"
                                     )}>
                                         {isUp ? '+' : ''}{typeof quote.change === 'number' ? quote.change.toFixed(2) : '--'} ({typeof quote.changePercent === 'number' ? quote.changePercent.toFixed(2) : '--'}%)
                                     </div>
                                 </div>
                             ) : (
-                                <div className="h-10 w-24 bg-white/5 animate-pulse rounded"></div>
+                                <div className="h-10 w-24 bg-muted-app animate-pulse rounded"></div>
                             )}
                         </div>
                     </section>
@@ -95,11 +95,11 @@ export default function CompanyPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="terminal-card p-4">
-                            <h3 className="text-[10px] font-mono font-bold text-gray-500 flex items-center gap-2 mb-3">
+                            <h3 className="text-[10px] font-mono font-bold text-muted-foreground-app flex items-center gap-2 mb-3">
                                 <Info size={14} className="text-blue-500" />
                                 {t('about_company')}
                             </h3>
-                            <p className="text-xs text-gray-400 leading-relaxed font-mono">
+                            <p className="text-xs text-muted-foreground-app leading-relaxed font-mono">
                                 {company.name} es un {company.category.toLowerCase()} líder centrado en {company.region}.
                                 Sus activos clave incluyen: {company.keywords.join(", ")}.
                                 Actualmente monitoreado por su impacto sistémico en la industria global de videojuegos.
@@ -107,7 +107,7 @@ export default function CompanyPage() {
                         </div>
 
                         <div className="terminal-card p-4">
-                            <h3 className="text-[10px] font-mono font-bold text-gray-500 flex items-center gap-2 mb-3">
+                            <h3 className="text-[10px] font-mono font-bold text-muted-foreground-app flex items-center gap-2 mb-3">
                                 <Tag size={14} className="text-blue-500" />
                                 {t('business_keywords')}
                             </h3>
@@ -124,15 +124,15 @@ export default function CompanyPage() {
 
                 {/* Right Column: Company News & Alerts */}
                 <div className="flex flex-col gap-6">
-                    <div className="terminal-card p-4 bg-blue-600/5 border-blue-600/20">
-                        <h3 className="text-[10px] font-mono font-bold text-blue-400 flex items-center gap-2 mb-3">
+                    <div className="terminal-card p-4 bg-primary-app/5 border-primary-app/20">
+                        <h3 className="text-[10px] font-mono font-bold text-primary-app flex items-center gap-2 mb-3">
                             <AlertCircle size={14} />
                             {t('system_alerts')}
                         </h3>
-                        <div className="text-[10px] text-gray-500 font-mono mb-4">
+                        <div className="text-[10px] text-muted-foreground-app font-mono mb-4">
                             Monitoriza cambios de precio y palabras clave.
                         </div>
-                        <button className="w-full py-2 border border-blue-600/40 text-blue-400 font-mono text-[10px] rounded hover:bg-blue-600/10 transition-colors uppercase">
+                        <button className="w-full py-2 border border-primary-app/40 text-primary-app font-mono text-[10px] rounded hover:bg-primary-app/10 transition-colors uppercase">
                             {t('configure_alert')}
                         </button>
                     </div>

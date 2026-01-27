@@ -1,20 +1,93 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background-app: #0a0a0b;
-  --color-foreground-app: #e4e4e7;
-  --color-primary-app: #3b82f6;
-  --color-secondary-app: #18181b;
-  --color-accent-app: #10b981;
-  --color-danger-app: #ef4444;
-  --color-border-app: #27272a;
-  
+  /* Semantic Colors referencing CSS Variables */
+  --color-background-app: var(--background);
+  --color-foreground-app: var(--foreground);
+  --color-card-app: var(--card);
+  --color-card-foreground-app: var(--card-foreground);
+  --color-popover-app: var(--popover);
+  --color-popover-foreground-app: var(--popover-foreground);
+  --color-primary-app: var(--primary);
+  --color-primary-foreground-app: var(--primary-foreground);
+  --color-secondary-app: var(--secondary);
+  --color-secondary-foreground-app: var(--secondary-foreground);
+  --color-muted-app: var(--muted);
+  --color-muted-foreground-app: var(--muted-foreground);
+  --color-accent-app: var(--accent);
+  --color-accent-foreground-app: var(--accent-foreground);
+  --color-border-app: var(--border);
+  --color-input-app: var(--input);
+
   --font-mono-app: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
 :root {
+  /* Light Mode Defaults */
+  --background: #ffffff;
+  --foreground: #09090b;
+
+  --card: #ffffff;
+  --card-foreground: #09090b;
+
+  --popover: #ffffff;
+  --popover-foreground: #09090b;
+
+  --primary: #2563eb;
+  /* Blue 600 */
+  --primary-foreground: #ffffff;
+
+  --secondary: #f4f4f5;
+  /* Zinc 100 */
+  --secondary-foreground: #18181b;
+
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+
+  --radius: 0.5rem;
+}
+
+.dark {
+  /* Dark Mode Overrides (Existing Palette) */
   --background: #0a0a0b;
   --foreground: #e4e4e7;
+
+  --card: #18181b;
+  /* Zinc 950/900 mix */
+  --card-foreground: #e4e4e7;
+
+  --popover: #0a0a0b;
+  --popover-foreground: #e4e4e7;
+
+  --primary: #3b82f6;
+  /* Blue 500 */
+  --primary-foreground: #ffffff;
+
+  --secondary: #27272a;
+  /* Zinc 800 */
+  --secondary-foreground: #e4e4e7;
+
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+
+  --accent: #27272a;
+  --accent-foreground: #e4e4e7;
+
+  --destructive: #7f1d1d;
+  --destructive-foreground: #e4e4e7;
+
+  --border: #27272a;
+  --input: #000000;
+  /* Inputs darker in dark mode */
 }
 
 @layer base {
@@ -26,15 +99,16 @@
 
 @layer components {
   .terminal-card {
-    @apply bg-secondary-app border border-border-app rounded-md overflow-hidden transition-all duration-200;
+    /* Using semantic variables */
+    @apply bg-card-app text-card-foreground-app border border-border-app rounded-md overflow-hidden transition-all duration-200;
   }
 
   .terminal-card:hover {
-    @apply border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.1)];
+    @apply border-primary-app/50 shadow-[0_0_15px_rgba(59, 130, 246, 0.1)];
   }
 
   .terminal-input {
-    @apply bg-black border border-border-app text-white px-3 py-2 rounded-md focus:outline-none focus:border-blue-500 font-mono text-sm;
+    @apply bg-input-app border border-border-app text-foreground-app px-3 py-2 rounded-md focus:outline-none focus:border-primary-app font-mono text-sm placeholder:text-muted-foreground-app;
   }
 
   .terminal-btn {
@@ -42,27 +116,24 @@
   }
 
   .terminal-btn-primary {
-    @apply bg-blue-600 text-white hover:bg-blue-700 active:scale-95;
+    @apply bg-primary-app text-primary-foreground-app hover:brightness-110 active:scale-95;
   }
 
   .terminal-btn-secondary {
-    @apply border border-border-app text-gray-400 hover:text-white hover:border-gray-500;
+    @apply border border-border-app text-muted-foreground-app hover:text-foreground-app hover:border-foreground-app bg-transparent;
   }
 
-  .status-up {
-    @apply text-emerald-400;
-  }
-
-  .status-down {
-    @apply text-rose-500;
-  }
-
-  .status-neutral {
-    @apply text-gray-400;
-  }
-
+  /* Utilities */
   .badge {
     @apply px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider;
+  }
+
+  .badge-blue {
+    @apply bg-blue-500/10 text-blue-500 border border-blue-500/20;
+  }
+
+  .badge-emerald {
+    @apply bg-emerald-500/10 text-emerald-500 border border-emerald-500/20;
   }
 
   /* Scrollbar customization */
@@ -72,10 +143,10 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-black;
+    @apply bg-background-app;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-[#27272a] rounded-full hover:bg-[#3f3f46];
+    @apply bg-border-app rounded-full hover:bg-muted-foreground-app;
   }
 }

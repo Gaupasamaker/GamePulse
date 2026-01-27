@@ -54,7 +54,7 @@ export const AuthButton = () => {
         }
     }, [user]);
 
-    if (loading) return <div className="w-8 h-8 rounded-full bg-white/5 animate-pulse" />;
+    if (loading) return <div className="w-8 h-8 rounded-full bg-secondary-app animate-pulse" />;
 
     if (user) {
         return (
@@ -65,23 +65,23 @@ export const AuthButton = () => {
                         <img
                             src={avatar}
                             alt={user.user_metadata.full_name}
-                            className="w-8 h-8 rounded-full border border-white/10 object-cover"
+                            className="w-8 h-8 rounded-full border border-border-app object-cover"
                         />
                     ) : (
-                        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white border border-blue-400">
+                        <div className="w-8 h-8 rounded-full bg-primary-app flex items-center justify-center text-primary-foreground-app border border-primary-app/50">
                             <span className="font-mono text-xs">{user.email?.[0].toUpperCase()}</span>
                         </div>
                     )}
 
                     {/* Dropdown Menu (Simple) */}
-                    <div className="absolute right-0 top-full mt-2 w-48 bg-black border border-border-app rounded-md shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
+                    <div className="absolute right-0 top-full mt-2 w-48 bg-popover-app border border-border-app rounded-md shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
                         <div className="p-3 border-b border-border-app">
-                            <p className="text-xs text-gray-400 font-mono">Signed in as</p>
+                            <p className="text-xs text-muted-foreground-app font-mono">Signed in as</p>
                             <p className="text-sm font-bold truncate">{username || user.user_metadata.full_name || user.email}</p>
                         </div>
                         <Link
                             href="/profile"
-                            className="w-full text-left px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition-colors"
+                            className="w-full text-left px-4 py-2 text-sm text-muted-foreground-app hover:text-foreground-app hover:bg-secondary-app flex items-center gap-2 transition-colors"
                         >
                             <UserIcon size={14} /> Profile
                         </Link>
@@ -100,7 +100,7 @@ export const AuthButton = () => {
     return (
         <button
             onClick={signInWithGoogle}
-            className="flex items-center gap-2 px-3 py-1.5 bg-white text-black text-xs font-bold font-mono rounded hover:bg-gray-200 transition-colors"
+            className="flex items-center gap-2 px-3 py-1.5 bg-primary-app text-primary-foreground-app text-xs font-bold font-mono rounded hover:brightness-110 transition-colors"
         >
             <LogIn size={14} />
             LOGIN

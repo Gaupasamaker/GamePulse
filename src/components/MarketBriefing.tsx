@@ -71,22 +71,22 @@ export const MarketBriefing: React.FC = () => {
     return (
         <div className={`terminal-card p-4 border-l-4 ${config.color} flex items-center justify-between`}>
             <div className="flex items-center gap-4">
-                <div className="p-2 bg-black/20 rounded-full">
+                <div className="p-2 bg-secondary-app rounded-full">
                     {config.icon}
                 </div>
                 <div className="flex flex-col">
-                    <h3 className="text-sm font-bold font-mono text-white flex items-center gap-2">
+                    <h3 className="text-sm font-bold font-mono text-foreground-app flex items-center gap-2">
                         {t('market_briefing')}
                         <span className={`text-xs ml-2 px-2 py-0.5 rounded border ${status === 'bullish' ? 'border-emerald-500 text-emerald-500' : status === 'bearish' ? 'border-rose-500 text-rose-500' : 'border-yellow-500 text-yellow-500'}`}>
                             {avgChange > 0 ? '+' : ''}{avgChange.toFixed(2)}%
                         </span>
                     </h3>
-                    <p className="text-xs text-gray-400 font-mono mt-1">
+                    <p className="text-xs text-muted-foreground-app font-mono mt-1">
                         {config.title}: {config.desc}
                     </p>
                 </div>
             </div>
-            <Zap size={16} className="text-gray-600 hidden md:block" />
+            <Zap size={16} className="text-muted-foreground-app hidden md:block" />
         </div>
     );
 };
