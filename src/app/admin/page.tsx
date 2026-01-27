@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Shield, LayoutGrid, Plus, Edit2, Trash2, Globe, Tag, Save, X } from 'lucide-react';
+import { Shield, LayoutGrid, Plus, Edit2, Trash2, Globe, Tag, Save, X, User } from 'lucide-react';
 import { SEED_COMPANIES, Company } from '@/data/companies';
 import { useLanguage } from '@/providers/LanguageProvider';
 
@@ -45,9 +45,30 @@ export default function AdminPage() {
                         Gestión del universo de empresas gaming y categorización.
                     </p>
                 </div>
-                <button className="terminal-btn terminal-btn-primary">
-                    <Plus size={16} /> {t('add_entity')}
-                </button>
+                <div className="flex gap-2">
+                    <button
+                        onClick={async () => {
+                            if (!confirm('¿Generar 10 usuarios de prueba? Esto llenará el Leaderboard.')) return;
+                            try {
+                                const res = await fetch('/api/admin/populate', { method: 'POST' });
+                                const data = await res.json();
+                                if (res.ok) {
+                                    alert(data.message);
+                                } else {
+                                    alert('Error: ' + data.error);
+                                }
+                            } catch (e) {
+                                alert('Error de conexión');
+                            }
+                        }}
+                        className="terminal-btn terminal-btn-secondary"
+                    >
+                        <User size={16} /> POPULATE (TEST)
+                    </button>
+                    <button className="terminal-btn terminal-btn-primary">
+                        <Plus size={16} /> {t('add_entity')}
+                    </button>
+                </div>
             </section>
 
             <div className="terminal-card overflow-hidden">
