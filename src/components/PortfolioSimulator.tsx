@@ -33,17 +33,51 @@ export const PortfolioSimulator: React.FC = () => {
     // Cargar quotes para todas las posiciones
     const { quotes, loading: loadingQuotes } = useQuotes(positions.map(p => p.ticker));
 
-    // Cargar datos (Nube o Local)
+    // Cargar datos (Nube o Local) con Migración Automática
     useEffect(() => {
-        const loadPositions = async () => {
+        const loadAndMigrate = async () => {
+            const localData = localStorage.getItem('gamepulse_portfolio');
+            let localPositions: Position[] = localData ? JSON.parse(localData) : [];
+
             if (user) {
                 setLoadingDb(true);
+
+                // 1. Comprobar si hay datos en la nube
+                const { count } = await supabase
+                    .from('transactions')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', user.id);
+
+                // 2. Si la nube está vacía y hay datos locales -> MIGRAR
+                if (count === 0 && localPositions.length > 0) {
+                    console.log("🚀 Migrando datos locales a la nube...");
+
+                    const transactionsToInsert = localPositions.map(p => ({
+                        user_id: user.id,
+                        ticker: p.ticker,
+                        amount: p.shares,
+                        price: p.avgCost,
+                        type: 'buy'
+                    }));
+
+                    const { error } = await supabase.from('transactions').insert(transactionsToInsert);
+
+                    if (!error) {
+                        console.log("✅ Migración completada. Borrando datos locales.");
+                        localStorage.removeItem('gamepulse_portfolio');
+                        localPositions = []; // Para que no se carguen abajo
+                    } else {
+                        console.error("❌ Error en migración:", error);
+                    }
+                }
+
+                // 3. Cargar datos definitivos de la nube
                 const { data } = await supabase.from('transactions').select('*');
                 if (data) {
                     const cloudPositions = data.map(tx => ({
                         id: tx.id,
                         ticker: tx.ticker,
-                        shares: Number(tx.amount), // Postgres numeric viene como string/number dependiendo del driver
+                        shares: Number(tx.amount),
                         avgCost: Number(tx.price)
                     }));
                     setPositions(cloudPositions);
@@ -51,11 +85,10 @@ export const PortfolioSimulator: React.FC = () => {
                 setLoadingDb(false);
             } else {
                 // Modo Offline
-                const saved = localStorage.getItem('gamepulse_portfolio');
-                if (saved) setPositions(JSON.parse(saved));
+                if (localPositions.length > 0) setPositions(localPositions);
             }
         };
-        loadPositions();
+        loadAndMigrate();
     }, [user]);
 
     // Función auxiliar para actualizar LocalStorage solo si no hay usuario
