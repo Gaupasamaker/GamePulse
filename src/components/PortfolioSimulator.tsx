@@ -28,7 +28,9 @@ export const PortfolioSimulator: React.FC = () => {
     const [newTicker, setNewTicker] = useState('');
     const [newShares, setNewShares] = useState('');
     const [newCost, setNewCost] = useState('');
+    const [balance, setBalance] = useState(10000); // Default 10k
     const [loadingDb, setLoadingDb] = useState(false);
+    const [insufficientFunds, setInsufficientFunds] = useState(false);
 
     // Cargar quotes para todas las posiciones
     const { quotes, loading: loadingQuotes } = useQuotes(positions.map(p => p.ticker));
@@ -82,6 +84,19 @@ export const PortfolioSimulator: React.FC = () => {
                     }));
                     setPositions(cloudPositions);
                 }
+
+
+                // 4. Fetch User Balance
+                const { data: profileData } = await supabase
+                    .from('profiles')
+                    .select('balance')
+                    .eq('id', user.id)
+                    .single();
+
+                if (profileData) {
+                    setBalance(Number(profileData.balance));
+                }
+
                 setLoadingDb(false);
             } else {
                 // Modo Offline
@@ -104,9 +119,20 @@ export const PortfolioSimulator: React.FC = () => {
 
         const sharesVal = parseFloat(newShares);
         const costVal = parseFloat(newCost);
+        const totalCost = sharesVal * costVal;
+
+        // Check if user has enough balance (only for logged in users in Arena Mode)
+        if (user) {
+            if (balance < totalCost) {
+                setInsufficientFunds(true);
+                setTimeout(() => setInsufficientFunds(false), 3000);
+                return;
+            }
+        }
 
         if (user) {
             // Guardar en Nube
+            // 1. Insert Transaction
             const { data, error } = await supabase.from('transactions').insert({
                 user_id: user.id,
                 ticker: newTicker,
@@ -124,11 +150,13 @@ export const PortfolioSimulator: React.FC = () => {
                 };
                 setPositions([...positions, newPos]);
 
-                // Actualizar total_equity en perfil (Basic aggregation)
-                // En una app real esto se haría con un Trigger o un Edge Function más complejo
+                // 2. Update Balance
+                const newBalance = balance - totalCost;
+                setBalance(newBalance);
+                await supabase.from('profiles').update({ balance: newBalance }).eq('id', user.id);
             }
         } else {
-            // Guardar en Local
+            // Guardar en Local (Infinite Money for Guest)
             const position: Position = {
                 id: Math.random().toString(36).substr(2, 9),
                 ticker: newTicker,
@@ -143,9 +171,23 @@ export const PortfolioSimulator: React.FC = () => {
         setNewCost('');
     };
 
-    const removePosition = async (id: string) => {
+    const removePosition = async (id: string, ticker: string, shares: number) => {
         if (user) {
+            // 1. Delete Transaction (Sell)
             await supabase.from('transactions').delete().eq('id', id);
+
+            // 2. Calculate Revenue (Current Market Price)
+            const currentPrice = quotes[ticker]?.price || 0; // Fallback to 0 if quote fails, cautious
+            // If quote missing, maybe we should fetch it or block? MVP: Use quote
+            // Better: If price is 0 (missing), fallback to avgCost to avoid destroying value?
+            // Let's use currentPrice if available, else warn? For MVP assume quote is there.
+            const revenue = currentPrice * shares;
+
+            // 3. Update Balance
+            const newBalance = balance + revenue;
+            setBalance(newBalance);
+            await supabase.from('profiles').update({ balance: newBalance }).eq('id', user.id);
+
             setPositions(positions.filter(p => p.id !== id));
         } else {
             updateLocal(positions.filter(p => p.id !== id));
@@ -182,24 +224,35 @@ export const PortfolioSimulator: React.FC = () => {
 
     return (
         <div className="flex flex-col gap-6">
-            {/* Summary Card */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="terminal-card p-6 bg-emerald-900/10 border-emerald-500/30">
+                    <h3 className="text-xs font-mono text-emerald-400 mb-2">{t('buying_power')}</h3>
+                    <div className="text-3xl font-bold text-white font-mono flex items-center gap-2">
+                        <DollarSign size={24} className="text-emerald-500" />
+                        {balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </div>
+                </div>
+
                 <div className="terminal-card p-6 bg-blue-900/10 border-blue-500/30">
                     <h3 className="text-xs font-mono text-blue-400 mb-2">{t('total_value')}</h3>
                     <div className="text-3xl font-bold text-white font-mono flex items-center gap-2">
                         <DollarSign size={24} className="text-blue-500" />
-                        {currentValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {(currentValue + balance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </div>
+                    <div className="text-[10px] text-gray-500 font-mono mt-1">
+                        Equity: ${currentValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </div>
                 </div>
 
                 <div className="terminal-card p-6">
-                    <h3 className="text-xs font-mono text-gray-400 mb-2">{t('roi')}</h3>
+                    <h3 className="text-xs font-mono text-gray-400 mb-2 cursor-help" title="Return on Investment (Total Value vs Initial 10k)">ROI (vs 10k)</h3>
                     <div className={cn(
                         "text-3xl font-bold font-mono flex items-center gap-2",
-                        totalRoi >= 0 ? "text-emerald-400" : "text-rose-500"
+                        ((currentValue + balance - 10000) / 10000 * 100) >= 0 ? "text-emerald-400" : "text-rose-500"
                     )}>
-                        {totalRoi >= 0 ? <TrendingUp size={24} /> : <TrendingDown size={24} />}
-                        {totalRoi.toFixed(2)}%
+                        {((currentValue + balance - 10000) / 10000 * 100) >= 0 ? <TrendingUp size={24} /> : <TrendingDown size={24} />}
+                        {((currentValue + balance - 10000) / 10000 * 100).toFixed(2)}%
                     </div>
                 </div>
 
@@ -207,9 +260,9 @@ export const PortfolioSimulator: React.FC = () => {
                     <h3 className="text-xs font-mono text-gray-400 mb-2">{t('gain_loss')}</h3>
                     <div className={cn(
                         "text-3xl font-bold font-mono",
-                        totalGain >= 0 ? "text-emerald-400" : "text-rose-500"
+                        (currentValue + balance - 10000) >= 0 ? "text-emerald-400" : "text-rose-500"
                     )}>
-                        {totalGain >= 0 ? '+' : ''}{totalGain.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {(currentValue + balance - 10000) >= 0 ? '+' : ''}{(currentValue + balance - 10000).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </div>
                 </div>
             </div>
@@ -274,10 +327,15 @@ export const PortfolioSimulator: React.FC = () => {
                         <button
                             onClick={addPosition}
                             disabled={!newTicker || !newShares || !newCost}
-                            className="terminal-btn terminal-btn-primary w-full justify-center mt-2"
+                            className="terminal-btn terminal-btn-primary w-full justify-center mt-2 group relative"
                         >
                             <Plus size={16} /> {t('add_position')}
                         </button>
+                        {insufficientFunds && (
+                            <div className="text-[10px] text-rose-500 font-mono text-center flex items-center justify-center gap-1 animate-pulse">
+                                <TrendingDown size={10} /> {t('error_funds')}
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -346,7 +404,7 @@ export const PortfolioSimulator: React.FC = () => {
                                                 </td>
                                                 <td className="px-4 py-3 text-center">
                                                     <button
-                                                        onClick={() => removePosition(p.id)}
+                                                        onClick={() => removePosition(p.id, p.ticker, p.shares)}
                                                         className="text-gray-600 hover:text-rose-500 transition-colors"
                                                     >
                                                         <Trash2 size={14} />

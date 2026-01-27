@@ -14,6 +14,7 @@ export type Profile = {
     username: string | null;
     avatar_url: string | null;
     total_equity: number;
+    balance: number;
     ranking_points: number;
     updated_at: string;
 };
@@ -25,5 +26,15 @@ export type Transaction = {
     amount: number;
     price: number;
     type: 'buy' | 'sell';
+    created_at: string;
+};
+
+export type Alert = {
+    id: string;
+    user_id: string;
+    ticker: string;
+    type: 'price_above' | 'price_below' | 'percent_change';
+    value: number;
+    active: boolean;
     created_at: string;
 };

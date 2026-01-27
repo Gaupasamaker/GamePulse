@@ -7,6 +7,8 @@ import { MarketBriefing } from "@/components/MarketBriefing";
 import { Search, Filter, TrendingUp } from "lucide-react";
 import { useLanguage } from "@/providers/LanguageProvider";
 
+import { AlertsPanel } from "@/components/AlertsPanel";
+
 export default function Home() {
   const { t } = useLanguage();
 
@@ -51,8 +53,9 @@ export default function Home() {
           <Watchlist />
         </div>
 
-        {/* Right Column: News Feed */}
+        {/* Right Column: News Feed & Alerts */}
         <div className="flex flex-col gap-6">
+          <AlertsPanel />
           <NewsFeed />
         </div>
       </div>

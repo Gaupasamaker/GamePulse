@@ -12,29 +12,50 @@ export default function LeaderboardPage() {
     const { user } = useAuth();
     const [profiles, setProfiles] = useState<Profile[]>([]);
     const [loading, setLoading] = useState(true);
+    const [timeframe, setTimeframe] = useState<'all' | 'weekly' | 'monthly'>('all');
 
     useEffect(() => {
         const fetchLeaderboard = async () => {
             const { data, error } = await supabase
                 .from('profiles')
                 .select('*')
-                .order('total_equity', { ascending: false })
-                .limit(20);
+                .limit(50); // Traemos más para ordenar en cliente por ahora
 
             if (error) {
                 console.error('Error fetching leaderboard:', error);
             } else {
-                setProfiles(data || []);
+                let sortedData = data || [];
+
+                // Calcular ROI y Ordenar según Timeframe
+                sortedData = sortedData.map(p => {
+                    const current = p.total_equity + (p.balance || 0); // Total Equity + Cash
+                    // Fallback to current if start is missing (0% ROI)
+                    const weeklyStart = p.weekly_start_equity || 10000;
+                    const monthlyStart = p.monthly_start_equity || 10000;
+
+                    let roi = 0;
+                    if (timeframe === 'weekly') {
+                        roi = ((current - weeklyStart) / weeklyStart) * 100;
+                    } else if (timeframe === 'monthly') {
+                        roi = ((current - monthlyStart) / monthlyStart) * 100;
+                    } else {
+                        // All Time (vs 10k default)
+                        roi = ((current - 10000) / 10000) * 100;
+                    }
+
+                    return { ...p, calculated_roi: roi, total_value: current };
+                });
+
+                sortedData.sort((a: any, b: any) => b.calculated_roi - a.calculated_roi);
+                setProfiles(sortedData.slice(0, 20));
             }
             setLoading(false);
         };
 
         fetchLeaderboard();
-
-        // Refresh cada 30s
         const interval = setInterval(fetchLeaderboard, 30000);
         return () => clearInterval(interval);
-    }, []);
+    }, [timeframe]);
 
     return (
         <div className="p-4 md:p-8 max-w-7xl mx-auto flex flex-col gap-8">
@@ -61,8 +82,23 @@ export default function LeaderboardPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Columna Izquierda: Leaderboard */}
                 <div className="lg:col-span-2 terminal-card overflow-hidden">
-                    <div className="p-4 border-b border-border-app bg-black/20">
+                    <div className="p-4 border-b border-border-app bg-black/20 flex flex-col sm:flex-row justify-between items-center gap-4">
                         <h3 className="text-sm font-mono font-bold text-white">TOP INVESTORS</h3>
+
+                        <div className="flex bg-black/40 rounded p-1 border border-white/10">
+                            {(['all', 'monthly', 'weekly'] as const).map((t) => (
+                                <button
+                                    key={t}
+                                    onClick={() => setTimeframe(t)}
+                                    className={`px-4 py-1 rounded text-xs font-mono transition-colors uppercase ${timeframe === t
+                                            ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-500/20'
+                                            : 'text-gray-500 hover:text-white hover:bg-white/5'
+                                        }`}
+                                >
+                                    {t === 'all' ? 'All Time' : t}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
                     <div className="overflow-x-auto">
@@ -71,8 +107,8 @@ export default function LeaderboardPage() {
                                 <tr>
                                     <th className="p-4 w-16 text-center">RANK</th>
                                     <th className="p-4">JUGADOR</th>
-                                    <th className="p-4 text-right">VALOR CARTERA</th>
-                                    <th className="p-4 text-right">PUNTOS</th>
+                                    <th className="p-4 text-right">TOTAL VALUE</th>
+                                    <th className="p-4 text-right">ROI ({timeframe === 'all' ? 'ALL' : timeframe === 'weekly' ? '7D' : '30D'})</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -86,7 +122,7 @@ export default function LeaderboardPage() {
                                         </tr>
                                     ))
                                 ) : profiles.length > 0 ? (
-                                    profiles.map((profile, index) => (
+                                    profiles.map((profile: any, index) => (
                                         <tr
                                             key={profile.id}
                                             className={`border-b border-gray-800/50 hover:bg-white/5 transition-colors ${user?.id === profile.id ? 'bg-blue-500/10 border-l-2 border-l-blue-500' : ''}`}
@@ -109,11 +145,13 @@ export default function LeaderboardPage() {
                                                     {user?.id === profile.id && <span className="text-[10px] text-blue-500 uppercase">YOU</span>}
                                                 </div>
                                             </td>
-                                            <td className="p-4 text-right text-emerald-400 font-bold">
-                                                ${profile.total_equity?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                            <td className="p-4 text-right text-gray-300 font-mono">
+                                                ${profile.total_value?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                             </td>
-                                            <td className="p-4 text-right text-yellow-500 font-mono">
-                                                {profile.ranking_points || 0}
+                                            <td className={`p-4 text-right font-bold font-mono ${(profile.calculated_roi || 0) >= 0 ? 'text-emerald-400' : 'text-rose-500'
+                                                }`}>
+                                                {(profile.calculated_roi || 0) > 0 ? '+' : ''}
+                                                {(profile.calculated_roi || 0).toFixed(2)}%
                                             </td>
                                         </tr>
                                     ))
