@@ -15,6 +15,7 @@ export default function PublicProfilePage() {
 
     const [profile, setProfile] = useState<any>(null);
     const [positions, setPositions] = useState<any[]>([]);
+    const [achievements, setAchievements] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [challenging, setChallenging] = useState(false);
 
@@ -45,6 +46,22 @@ export default function PublicProfilePage() {
                 .order('shares', { ascending: false }); // Just a heuristic for "top"
 
             setPositions(posData || []);
+
+            // 3. Fetch Achievements
+            const { data: achievData } = await supabase
+                .from('user_achievements')
+                .select(`
+                    *,
+                    achievements (
+                        name,
+                        description,
+                        icon
+                    )
+                `)
+                .eq('user_id', id);
+
+            setAchievements(achievData || []);
+
             setLoading(false);
         };
 
@@ -100,7 +117,15 @@ export default function PublicProfilePage() {
             </button>
 
             {/* Profile Header */}
-            <div className="terminal-card p-8 flex flex-col md:flex-row items-center gap-8 bg-gradient-to-br from-secondary-app to-background-app">
+            <div className="terminal-card p-8 flex flex-col md:flex-row items-center gap-8 bg-gradient-to-br from-secondary-app to-background-app relative overflow-hidden">
+                {/* Top Pick Badge */}
+                {profile.top_pick && (
+                    <div className="absolute top-4 right-4 flex flex-col items-end opacity-20 hover:opacity-100 transition-opacity">
+                        <span className="text-[10px] font-mono uppercase text-yellow-500 font-bold">TOP PICK</span>
+                        <span className="text-4xl font-black font-mono text-foreground-app tracking-tighter">${profile.top_pick}</span>
+                    </div>
+                )}
+
                 <div className="relative">
                     <img
                         src={profile.avatar_url || `https://api.dicebear.com/9.x/pixel-art/svg?seed=${profile.username}`}
@@ -153,17 +178,58 @@ export default function PublicProfilePage() {
                             ${profile.total_equity?.toLocaleString('en-US', { maximumFractionDigits: 0 })}
                         </p>
                     </div>
-                    <div className="terminal-card p-4 bg-background-app/50 border-emerald-500/20">
-                        <p className="text-[10px] text-muted-foreground-app font-mono uppercase">Cash Balance</p>
-                        <p className="text-lg font-bold font-mono text-emerald-400">
-                            ${profile.balance?.toLocaleString('en-US', { maximumFractionDigits: 0 })}
-                        </p>
+                    <div className="grid grid-cols-2 gap-2">
+                        <div className="terminal-card p-2 bg-background-app/50 border-emerald-500/20 text-center">
+                            <p className="text-[9px] text-muted-foreground-app font-mono uppercase">Wins</p>
+                            <p className="text-lg font-bold font-mono text-emerald-400">{profile.wins || 0}</p>
+                        </div>
+                        <div className="terminal-card p-2 bg-background-app/50 border-rose-500/20 text-center">
+                            <p className="text-[9px] text-muted-foreground-app font-mono uppercase">Losses</p>
+                            <p className="text-lg font-bold font-mono text-rose-400">{profile.losses || 0}</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* Portfolio Composition */}
+            {/* Badges & Portfolio Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Badges Section */}
+                <div className="terminal-card p-6">
+                    <h3 className="text-sm font-mono font-bold text-muted-foreground-app mb-4 uppercase flex items-center gap-2">
+                        <Trophy size={16} className="text-yellow-500" /> Achievements
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                        {achievements.map((ua: any) => (
+                            <div key={ua.achievement_id} className="w-10 h-10 rounded bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 hover:scale-110 transition-transform cursor-help" title={ua.achievements?.name || 'Achievement'}>
+                                {ua.achievements?.icon === 'User' && <User size={20} />}
+                                {ua.achievements?.icon === 'Swords' && <Swords size={20} />}
+                                {ua.achievements?.icon === 'ShieldAlert' && <ShieldAlert size={20} />}
+                                {/* Add more icon mappings as needed */}
+                                {!ua.achievements?.icon && <Trophy size={20} />} {/* Default icon */}
+                            </div>
+                        ))}
+                        {/* Placeholder Hardcoded Badges for MVP - In real app, fetch from user_achievements */}
+                        {/* <div className="w-10 h-10 rounded bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 hover:scale-110 transition-transform cursor-help" title="Early Adopter">
+                            <User size={20} />
+                        </div>
+                        {(profile.wins || 0) > 0 && (
+                             <div className="w-10 h-10 rounded bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 hover:scale-110 transition-transform cursor-help" title="First Blood">
+                                <Swords size={20} />
+                            </div>
+                        )}
+                        {(profile.total_equity || 0) > 100000 && (
+                            <div className="w-10 h-10 rounded bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 hover:scale-110 transition-transform cursor-help" title="Whale">
+                                <ShieldAlert size={20} />
+                            </div>
+                        )} */}
+                        {/* Empty Slots */}
+                        {[...Array(5 - achievements.length > 0 ? 5 - achievements.length : 0)].map((_, i) => (
+                            <div key={`empty-${i}`} className="w-10 h-10 rounded bg-secondary-app/30 border border-dashed border-border-app flex items-center justify-center opacity-30">
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
                 <div className="terminal-card p-6">
                     <h3 className="text-sm font-mono font-bold text-muted-foreground-app mb-4 uppercase flex items-center gap-2">
                         <User size={16} className="text-blue-500" /> Portfolio Holdings
@@ -194,16 +260,6 @@ export default function PublicProfilePage() {
                             ))}
                         </div>
                     )}
-                </div>
-
-                <div className="terminal-card p-6 flex items-center justify-center text-center text-muted-foreground-app border-dashed">
-                    <div className="flex flex-col gap-2 items-center">
-                        <Swords size={32} className="opacity-20" />
-                        <h3 className="font-bold font-mono">Vs History</h3>
-                        <p className="text-xs font-mono max-w-[200px]">
-                            El historial de batallas contra este usuario aparecerá aquí próximamente.
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>

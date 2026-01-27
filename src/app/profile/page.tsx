@@ -31,6 +31,7 @@ export default function ProfilePage() {
     const [username, setUsername] = useState('');
     const [avatarUrl, setAvatarUrl] = useState('');
     const [bio, setBio] = useState('');
+    const [topPick, setTopPick] = useState('');
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
@@ -49,6 +50,7 @@ export default function ProfilePage() {
                 setUsername(data.username || '');
                 setAvatarUrl(data.avatar_url || user.user_metadata.avatar_url || AVATAR_PRESETS[0]);
                 setBio(data.bio || '');
+                setTopPick(data.top_pick || '');
             }
             setLoading(false);
         };
@@ -74,6 +76,7 @@ export default function ProfilePage() {
                     username: username,
                     avatar_url: avatarUrl,
                     bio: bio,
+                    top_pick: topPick,
                     updated_at: new Date().toISOString()
                 })
                 .eq('id', user.id);
@@ -146,6 +149,22 @@ export default function ProfilePage() {
                         <p className="text-[10px] text-right text-muted-foreground-app mt-1 font-mono">
                             {bio.length}/160 caracteres
                         </p>
+
+                        <label className="block text-xs font-mono text-muted-foreground-app mb-2 mt-4 uppercase">Top Pick (Acción Favorita)</label>
+                        <div className="flex gap-2 items-center">
+                            <span className="text-yellow-500 font-bold">$</span>
+                            <input
+                                type="text"
+                                value={topPick}
+                                onChange={(e) => setTopPick(e.target.value.toUpperCase())}
+                                className="terminal-input w-24 tracking-widest font-bold"
+                                placeholder="NVDA"
+                                maxLength={5}
+                            />
+                            <p className="text-[10px] text-muted-foreground-app">
+                                Aparecerá destacada en tu perfil.
+                            </p>
+                        </div>
                     </div>
 
                     <div className="terminal-card p-6">
