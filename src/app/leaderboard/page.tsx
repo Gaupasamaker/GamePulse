@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { Trophy, TrendingUp, User, Shield } from 'lucide-react';
+import Link from 'next/link';
 import { supabase, Profile } from '@/lib/supabase';
 import { useAuth } from '@/providers/AuthProvider';
 
@@ -139,9 +140,9 @@ export default function LeaderboardPage() {
                                                     </div>
                                                 )}
                                                 <div className="flex flex-col">
-                                                    <span className={user?.id === profile.id ? 'text-primary-app font-bold' : 'text-muted-foreground-app'}>
+                                                    <Link href={`/profile/${profile.id}`} className={user?.id === profile.id ? 'text-primary-app font-bold hover:underline' : 'text-muted-foreground-app hover:text-foreground-app hover:underline'}>
                                                         {profile.username || 'Anonymous'}
-                                                    </span>
+                                                    </Link>
                                                     {user?.id === profile.id && <span className="text-[10px] text-blue-500 uppercase">YOU</span>}
                                                 </div>
                                             </td>

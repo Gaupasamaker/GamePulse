@@ -4,6 +4,7 @@ import { Watchlist } from "@/components/Watchlist";
 import { TopMovers } from "@/components/TopMovers";
 import { NewsFeed } from "@/components/NewsFeed";
 import { MarketBriefing } from "@/components/MarketBriefing";
+import { ChallengesPanel } from "@/components/ChallengesPanel";
 import { Search, Filter, TrendingUp } from "lucide-react";
 import { useLanguage } from "@/providers/LanguageProvider";
 
@@ -48,8 +49,9 @@ export default function Home() {
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Watchlist (Span 2) */}
+        {/* Left Column: Watchlist & Challenges */}
         <div className="lg:col-span-2 flex flex-col gap-6">
+          <ChallengesPanel />
           <Watchlist />
         </div>
 
