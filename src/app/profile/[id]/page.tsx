@@ -126,6 +126,12 @@ export default function PublicProfilePage() {
                         </span>
                     </div>
 
+                    {profile.bio && (
+                        <p className="text-sm font-mono text-muted-foreground-app italic mt-2 max-w-md mx-auto md:mx-0 border-l-2 border-primary-app pl-4">
+                            "{profile.bio}"
+                        </p>
+                    )}
+
                     {!isOwnProfile && (
                         <div className="mt-4">
                             <button

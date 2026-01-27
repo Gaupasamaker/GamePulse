@@ -3,8 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { supabase } from '@/lib/supabase';
-import { User, Save, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { User, Save, Loader2, AlertCircle, CheckCircle2, MessageSquare, Swords } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { ChallengesPanel } from '@/components/ChallengesPanel';
 
 const AVATAR_PRESETS = [
     // Pixel Art "Gamer" style
@@ -29,6 +30,7 @@ export default function ProfilePage() {
 
     const [username, setUsername] = useState('');
     const [avatarUrl, setAvatarUrl] = useState('');
+    const [bio, setBio] = useState('');
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
@@ -46,6 +48,7 @@ export default function ProfilePage() {
             if (data) {
                 setUsername(data.username || '');
                 setAvatarUrl(data.avatar_url || user.user_metadata.avatar_url || AVATAR_PRESETS[0]);
+                setBio(data.bio || '');
             }
             setLoading(false);
         };
@@ -70,6 +73,7 @@ export default function ProfilePage() {
                 .update({
                     username: username,
                     avatar_url: avatarUrl,
+                    bio: bio,
                     updated_at: new Date().toISOString()
                 })
                 .eq('id', user.id);
@@ -109,7 +113,7 @@ export default function ProfilePage() {
     return (
         <div className="max-w-4xl mx-auto p-4 md:p-8 flex flex-col gap-8">
             <h1 className="text-3xl font-bold font-mono text-foreground-app tracking-tighter border-b border-border-app pb-4">
-                EDITAR PERFIL
+                MI PERFIL
             </h1>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -117,7 +121,7 @@ export default function ProfilePage() {
                 <div className="flex flex-col gap-6">
                     <div className="terminal-card p-6">
                         <label className="block text-xs font-mono text-muted-foreground-app mb-2 uppercase">Gamer Tag (Username)</label>
-                        <div className="flex gap-2 items-center">
+                        <div className="flex gap-2 items-center mb-4">
                             <span className="text-blue-500 font-bold">@</span>
                             <input
                                 type="text"
@@ -127,8 +131,20 @@ export default function ProfilePage() {
                                 placeholder="username"
                             />
                         </div>
-                        <p className="text-[10px] text-muted-foreground-app mt-2 font-mono">
-                            Este nombre aparecerá en el Leaderboard global.
+
+                        <label className="block text-xs font-mono text-muted-foreground-app mb-2 uppercase">Bio / Estado</label>
+                        <div className="flex gap-2 items-start">
+                            <MessageSquare className="text-blue-500 mt-2" size={16} />
+                            <textarea
+                                value={bio}
+                                onChange={(e) => setBio(e.target.value)}
+                                className="terminal-input flex-1 h-24 resize-none"
+                                placeholder="Escribe algo sobre ti..."
+                                maxLength={160}
+                            />
+                        </div>
+                        <p className="text-[10px] text-right text-muted-foreground-app mt-1 font-mono">
+                            {bio.length}/160 caracteres
                         </p>
                     </div>
 
@@ -140,7 +156,9 @@ export default function ProfilePage() {
                             </div>
                             <div className="flex-1">
                                 <p className="text-foreground-app font-mono font-bold text-lg">{username || 'Player'}</p>
-                                <p className="text-muted-foreground-app text-xs font-mono">Nivel 1 • Inversor Novato</p>
+                                <p className="text-muted-foreground-app text-xs font-mono italic">
+                                    {bio || "Sin descripción."}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -163,6 +181,16 @@ export default function ProfilePage() {
                         {saving ? <Loader2 className="animate-spin" /> : <Save size={18} />}
                         {saving ? 'GUARDANDO...' : 'GUARDAR CAMBIOS'}
                     </button>
+
+                    {/* Activity / Challenges Panel inside Profile */}
+                    <div className="mt-4">
+                        <h3 className="text-sm font-mono font-bold text-muted-foreground-app mb-4 uppercase flex items-center gap-2">
+                            <Swords size={16} className="text-blue-500" /> Mis Retos y Actividad
+                        </h3>
+                        <div className="terminal-card bg-secondary-app/20 p-4">
+                            <ChallengesPanel />
+                        </div>
+                    </div>
                 </div>
 
                 {/* Columna Derecha: Selector de Avatares */}
