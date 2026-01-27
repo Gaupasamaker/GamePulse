@@ -222,7 +222,7 @@ export const NewsFeed: React.FC<{ ticker?: string; query?: string; categoryLabel
                         <button
                             onClick={() => setActiveTab('market')}
                             className={`px-3 py-1 rounded text-[10px] font-mono font-bold transition-all ${activeTab === 'market'
-                                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 shadow-[0_0_10px_rgba(59,130,246,0.2)]'
+                                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 shadow-[0_0_10px_#3b82f633]'
                                 : 'text-muted-foreground-app hover:text-foreground-app'
                                 }`}
                         >
@@ -231,7 +231,7 @@ export const NewsFeed: React.FC<{ ticker?: string; query?: string; categoryLabel
                         <button
                             onClick={() => setActiveTab('portfolio')}
                             className={`px-3 py-1 rounded text-[10px] font-mono font-bold transition-all flex items-center gap-1 ${activeTab === 'portfolio'
-                                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
+                                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_10px_#10b98133]'
                                 : 'text-muted-foreground-app hover:text-foreground-app'
                                 }`}
                         >

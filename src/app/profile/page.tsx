@@ -178,7 +178,7 @@ export default function ProfilePage() {
                                 key={index}
                                 onClick={() => setAvatarUrl(url)}
                                 className={`aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${avatarUrl === url
-                                    ? 'border-primary-app shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+                                    ? 'border-primary-app shadow-[0_0_10px_#3b82f680]'
                                     : 'border-transparent hover:border-gray-600 bg-secondary-app'
                                     }`}
                             >
