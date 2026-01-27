@@ -57,14 +57,16 @@ const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
         <div className="terminal-card p-4 flex gap-4 group hover:bg-white/5 transition-colors">
             {/* Image Thumbnail */}
             <div className="hidden sm:block w-24 h-24 flex-shrink-0 rounded overflow-hidden border border-border-app/50 relative">
-                <img
-                    src={imageUrl}
-                    alt={tag}
-                    className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
-                    onError={(e) => {
-                        (e.target as HTMLImageElement).src = getFallbackImage('General');
-                    }}
-                />
+                <a href={news.url} target="_blank" rel="noopener noreferrer" className="block w-full h-full cursor-pointer">
+                    <img
+                        src={imageUrl}
+                        alt={tag}
+                        className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                        onError={(e) => {
+                            (e.target as HTMLImageElement).src = getFallbackImage('General');
+                        }}
+                    />
+                </a>
             </div>
 
             <div className="flex flex-col gap-2 flex-grow min-w-0">
@@ -105,9 +107,11 @@ const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
                     </div>
                 </div>
 
-                <h3 className="text-sm font-bold leading-tight group-hover:text-blue-400 transition-colors line-clamp-2">
-                    {news.headline}
-                </h3>
+                <a href={news.url} target="_blank" rel="noopener noreferrer" className="block">
+                    <h3 className="text-sm font-bold leading-tight group-hover:text-blue-400 transition-colors line-clamp-2">
+                        {news.headline}
+                    </h3>
+                </a>
 
                 <p className="text-xs text-gray-500 line-clamp-2 italic">
                     {news.summary}
