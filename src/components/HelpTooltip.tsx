@@ -9,18 +9,18 @@ interface HelpTooltipProps {
     className?: string;
 }
 
-export const HelpTooltip: React.FC<HelpTooltipProps> = ({ text, size = 14, className = "" }) => {
+export const HelpTooltip: React.FC<HelpTooltipProps> = ({ text, size = 16, className = "" }) => {
     const [isVisible, setIsVisible] = useState(false);
 
     return (
         <div
-            className={`relative inline-flex items-center ml-1 ${className}`}
+            className={`relative inline-flex items-center ml-1.5 ${className}`}
             onMouseEnter={() => setIsVisible(true)}
             onMouseLeave={() => setIsVisible(false)}
         >
             <HelpCircle
                 size={size}
-                className="text-muted-foreground-app hover:text-blue-400 cursor-help transition-colors"
+                className="text-blue-500/70 hover:text-blue-400 cursor-help transition-colors"
             />
 
             {isVisible && (
