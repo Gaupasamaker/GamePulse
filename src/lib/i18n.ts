@@ -77,6 +77,8 @@ export const dictionary = {
         no_portfolio_news_desc: "No se encontraron posiciones en tu portfolio. Añade acciones en el simulador para ver noticias relevantes.",
         market_tab: "MERCADO",
         portfolio_tab: "MI PORTFOLIO",
+        rank: "RANGO",
+        player: "JUGADOR",
     },
     en: {
         dashboard: "DASHBOARD",
@@ -154,5 +156,7 @@ export const dictionary = {
         no_portfolio_news_desc: "No positions found in your portfolio. Add stocks to the simulator to see relevant news here.",
         market_tab: "MARKET",
         portfolio_tab: "MY PORTFOLIO",
+        rank: "RANK",
+        player: "PLAYER",
     }
 };

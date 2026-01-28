@@ -4,10 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/providers/LanguageProvider';
 import { SEED_COMPANIES } from '@/data/companies';
 import { useQuotes } from '@/hooks/useQuotes';
-import { PieChart, Plus, Trash2, TrendingUp, TrendingDown, DollarSign, Calculator, Cloud, Save } from 'lucide-react';
+import { PieChart, Plus, Trash2, TrendingUp, TrendingDown, DollarSign, Calculator, Cloud, Save, Loader2 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useAuth } from '@/providers/AuthProvider';
+import { HelpTooltip } from '@/components/HelpTooltip';
 import { supabase } from '@/lib/supabase';
 
 function cn(...inputs: ClassValue[]) {
@@ -246,7 +247,10 @@ export const PortfolioSimulator: React.FC = () => {
                 </div>
 
                 <div className="terminal-card p-6">
-                    <h3 className="text-xs font-mono text-muted-foreground-app mb-2 cursor-help" title="Return on Investment (Total Value vs Initial 10k)">ROI (vs 10k)</h3>
+                    <h3 className="text-xs font-mono text-muted-foreground-app mb-2 flex items-center">
+                        ROI (vs 10k)
+                        <HelpTooltip text="Retorno de Inversión basado en los $10,000 iniciales del simulador." />
+                    </h3>
                     <div className={cn(
                         "text-3xl font-bold font-mono flex items-center gap-2",
                         ((currentValue + balance - 10000) / 10000 * 100) >= 0 ? "text-emerald-400" : "text-rose-500"
@@ -419,6 +423,6 @@ export const PortfolioSimulator: React.FC = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };

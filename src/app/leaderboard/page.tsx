@@ -1,16 +1,17 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
-import { Trophy, TrendingUp, User, Shield } from 'lucide-react';
-import Link from 'next/link';
-import { supabase, Profile } from '@/lib/supabase';
+import { Trophy, TrendingUp, TrendingDown, Medal, User, Calendar, History, Sword, Shield } from 'lucide-react';
+import { supabase, Profile } from '@/lib/supabase'; // Consolidated
 import { useAuth } from '@/providers/AuthProvider';
-
+import Link from 'next/link';
 import { ActivityFeed } from '@/components/ActivityFeed';
+import { useLanguage } from '@/providers/LanguageProvider'; // Added
+import { HelpTooltip } from '@/components/HelpTooltip';
 
 export default function LeaderboardPage() {
     const { user } = useAuth();
+    const { t } = useLanguage(); // Added hook usage
     const [profiles, setProfiles] = useState<Profile[]>([]);
     const [loading, setLoading] = useState(true);
     const [timeframe, setTimeframe] = useState<'all' | 'weekly' | 'monthly'>('all');
@@ -106,10 +107,18 @@ export default function LeaderboardPage() {
                         <table className="w-full text-left font-mono text-sm">
                             <thead className="bg-muted-app text-muted-foreground-app border-b border-border-app">
                                 <tr>
-                                    <th className="p-4 w-16 text-center">RANK</th>
-                                    <th className="p-4">JUGADOR</th>
-                                    <th className="p-4 text-right">TOTAL VALUE</th>
-                                    <th className="p-4 text-right">ROI ({timeframe === 'all' ? 'ALL' : timeframe === 'weekly' ? '7D' : '30D'})</th>
+                                    <th className="px-4 py-3 font-semibold text-muted-foreground-app">{t('rank')}</th>
+                                    <th className="px-4 py-3 font-semibold text-muted-foreground-app">{t('player')}</th>
+                                    <th className="px-4 py-3 text-right font-semibold text-muted-foreground-app flex items-center justify-end">
+                                        Total Return
+                                        <HelpTooltip text="Rentabilidad total desde el inicio (equity actual / $10k)." />
+                                    </th>
+                                    <th className="px-4 py-3 text-right font-semibold text-muted-foreground-app">
+                                        <span className="flex items-center justify-end">
+                                            Points
+                                            <HelpTooltip text="Puntos de Ranking = Rentabilidad Total * 100." />
+                                        </span>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
