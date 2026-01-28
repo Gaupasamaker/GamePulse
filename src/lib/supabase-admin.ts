@@ -6,6 +6,9 @@ const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeho
 
 if (!supabaseUrl || !supabaseServiceRoleKey) {
     console.warn('Faltan variables de entorno para Supabase Admin (URL o Service Role Key).');
+} else {
+    // Confirmación en logs del servidor (no expone claves)
+    console.log('Supabase Admin: Inicializado correctamente con Service Role.');
 }
 
 export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
