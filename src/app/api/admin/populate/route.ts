@@ -72,53 +72,63 @@ export async function POST() {
 
 export async function DELETE() {
     try {
-        console.log('Iniciando limpieza de usuarios fantasma (Estrategia Avatar)...');
+        console.log('Iniciando limpieza de usuarios fantasma (Cascade Manual)...');
 
-        // Estrategia alternativa: Como auth.admin.listUsers() está fallando en Vercel (error 500),
-        // identificamos a los bots por su huella digital única: Avatar de DiceBear.
         const BOT_AVATAR_PATTERN = '%dicebear.com%';
 
-        // 1. Contar bots antes de borrar
-        const { count: botCount, error: countError } = await supabaseAdmin
+        // 1. Obtener IDs de los bots
+        const { data: bots, error: fetchError } = await supabaseAdmin
             .from('profiles')
-            .select('*', { count: 'exact', head: true })
+            .select('id')
             .like('avatar_url', BOT_AVATAR_PATTERN);
 
-        if (countError) throw countError;
+        if (fetchError) throw fetchError;
 
-        console.log(`[DELETE] Bots detectados por avatar: ${botCount}`);
+        console.log(`[DELETE] Bots detectados: ${bots.length}`);
 
-        if (botCount === 0) {
+        if (bots.length === 0) {
             return NextResponse.json({
                 message: 'No se encontraron bots para eliminar.',
                 count: 0
             });
         }
 
-        // 2. Ejecutar borrado masivo
-        const { data, error, count } = await supabaseAdmin
+        const botIds = bots.map(b => b.id);
+
+        // 2. Eliminar Transacciones asociadas (Manual Cascade)
+        const { error: deleteTransactionsError } = await supabaseAdmin
+            .from('transactions')
+            .delete()
+            .in('user_id', botIds);
+
+        if (deleteTransactionsError) {
+            console.error('[DELETE] Error borrando transacciones:', deleteTransactionsError);
+            throw deleteTransactionsError;
+        }
+
+        // 3. Eliminar Perfiles
+        const { error: deleteProfilesError, count } = await supabaseAdmin
             .from('profiles')
             .delete()
-            .like('avatar_url', BOT_AVATAR_PATTERN)
+            .in('id', botIds)
             .select();
 
-        if (error) {
-            console.error('Error eliminando usuarios:', error);
-            const debugInfo = {
-                strategy: 'avatar_pattern',
-                error_details: error.message
-            };
-            return NextResponse.json({ error: error.message, debug: debugInfo }, { status: 500 });
+        if (deleteProfilesError) {
+            console.error('[DELETE] Error borrando perfiles:', deleteProfilesError);
+            throw deleteProfilesError;
         }
 
         return NextResponse.json({
-            message: `Se han purgado ${count} bots correctamente.`,
+            message: `Se han purgado ${count} bots y sus transacciones correctamente.`,
             count: count,
-            strategy: 'avatar'
+            strategy: 'manual_cascade'
         });
 
     } catch (err: any) {
         console.error('Error fatal al limpiar usuarios:', err);
-        return NextResponse.json({ error: err.message || 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({
+            error: err.message || 'Internal Server Error',
+            details: 'Falló la eliminación en cascada'
+        }, { status: 500 });
     }
 }
