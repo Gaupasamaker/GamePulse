@@ -72,61 +72,53 @@ export async function POST() {
 
 export async function DELETE() {
     try {
-        console.log('Iniciando limpieza de usuarios fantasma...');
+        console.log('Iniciando limpieza de usuarios fantasma (Estrategia Avatar)...');
 
-        // 1. Obtener todos los usuarios REALES de Auth (supabaseAdmin tiene acceso a auth)
-        // Agregamos logs para depurar en Vercel
-        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-        console.log(`[DELETE] Service Key Present: ${!!serviceKey}, Length: ${serviceKey?.length}`);
+        // Estrategia alternativa: Como auth.admin.listUsers() está fallando en Vercel (error 500),
+        // identificamos a los bots por su huella digital única: Avatar de DiceBear.
+        const BOT_AVATAR_PATTERN = '%dicebear.com%';
 
-        const { data, error: authError } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+        // 1. Contar bots antes de borrar
+        const { count: botCount, error: countError } = await supabaseAdmin
+            .from('profiles')
+            .select('*', { count: 'exact', head: true })
+            .like('avatar_url', BOT_AVATAR_PATTERN);
 
-        if (authError) {
-            console.error('[DELETE] Auth Error:', authError);
-            throw new Error(`Auth Error: ${authError.message} (Status: ${authError.status})`);
+        if (countError) throw countError;
+
+        console.log(`[DELETE] Bots detectados por avatar: ${botCount}`);
+
+        if (botCount === 0) {
+            return NextResponse.json({
+                message: 'No se encontraron bots para eliminar.',
+                count: 0
+            });
         }
 
-        const users = data.users;
-        console.log(`[DELETE] Usuarios reales encontrados: ${users.length}`);
-
-        const realUserIds = users.map(u => u.id);
-
-        // 2. Eliminar perfiles que NO estén en la lista de usuarios reales
-        // Usamos .not('id', 'in', realUserIds) si la lista no está vacía
-        let query = supabaseAdmin.from('profiles').delete();
-
-        if (realUserIds.length > 0) {
-            query = query.not('id', 'in', `(${realUserIds.join(',')})`);
-        }
-
-        // Ejecutar borrado
-        const { data: queryData, error, count } = await query;
+        // 2. Ejecutar borrado masivo
+        const { data, error, count } = await supabaseAdmin
+            .from('profiles')
+            .delete()
+            .like('avatar_url', BOT_AVATAR_PATTERN)
+            .select();
 
         if (error) {
             console.error('Error eliminando usuarios:', error);
-            return NextResponse.json({ error: error.message }, { status: 500 });
+            const debugInfo = {
+                strategy: 'avatar_pattern',
+                error_details: error.message
+            };
+            return NextResponse.json({ error: error.message, debug: debugInfo }, { status: 500 });
         }
 
         return NextResponse.json({
-            message: `Se han eliminado los usuarios fantasma correctamente.`,
-            count: count // Supabase suele devolver null en count con delete salvo configuración, pero intentamos
+            message: `Se han purgado ${count} bots correctamente.`,
+            count: count,
+            strategy: 'avatar'
         });
 
     } catch (err: any) {
         console.error('Error fatal al limpiar usuarios:', err);
-
-        // Debug info para el usuario (ayuda a diagnosticar problemas de Vercel)
-        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-        const debugInfo = {
-            key_present: !!serviceKey,
-            key_length: serviceKey?.length || 0,
-            url: process.env.NEXT_PUBLIC_SUPABASE_URL,
-            error_details: err.message
-        };
-
-        return NextResponse.json({
-            error: err.message || 'Internal Server Error',
-            debug: debugInfo
-        }, { status: 500 });
+        return NextResponse.json({ error: err.message || 'Internal Server Error' }, { status: 500 });
     }
 }
