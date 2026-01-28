@@ -6,6 +6,7 @@ import { SEED_COMPANIES, Company } from '@/data/companies';
 import { useLanguage } from '@/providers/LanguageProvider';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
+import { IS_ADMIN } from '@/lib/config';
 import { BadgeAwarder } from '@/components/BadgeAwarder';
 
 export default function AdminPage() {
@@ -18,13 +19,13 @@ export default function AdminPage() {
 
     React.useEffect(() => {
         if (!loading) {
-            if (!user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+            if (!IS_ADMIN(user?.email)) {
                 router.push('/');
             }
         }
     }, [user, loading, router]);
 
-    if (loading || !user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+    if (loading || !IS_ADMIN(user?.email)) {
         return null; // O un spinner
     }
 

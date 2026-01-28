@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useLanguage } from '@/providers/LanguageProvider';
 import { useTheme } from '@/providers/ThemeProvider';
 import { useAuth } from '@/providers/AuthProvider';
+import { IS_ADMIN } from '@/lib/config';
 import { AuthButton } from './AuthButton';
 
 export const Header: React.FC = () => {
@@ -39,7 +40,7 @@ export const Header: React.FC = () => {
                     </Link>
                     <Link href="/compare" className="px-3 py-1.5 text-sm text-muted-foreground-app hover:text-foreground-app transition-colors font-mono">{t('market_comparator')}</Link>
                     <Link href="/calendar" className="px-3 py-1.5 text-sm text-muted-foreground-app hover:text-foreground-app transition-colors font-mono">{t('calendar')}</Link>
-                    {(user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL) && (
+                    {IS_ADMIN(user?.email) && (
                         <Link href="/admin" className="px-3 py-1.5 text-sm text-muted-foreground-app hover:text-foreground-app transition-colors font-mono flex items-center gap-1">
                             <Shield size={14} className="text-emerald-500" /> {t('admin')}
                         </Link>
