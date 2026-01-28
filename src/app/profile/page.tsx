@@ -45,13 +45,19 @@ export default function ProfilePage() {
                 .from('profiles')
                 .select('*')
                 .eq('id', user.id)
-                .single();
+                .maybeSingle(); // Use maybeSingle to avoid error on no rows
 
             if (data) {
-                setUsername(data.username || '');
+                setUsername(data.username || user.user_metadata.full_name || '');
                 setAvatarUrl(data.avatar_url || user.user_metadata.avatar_url || AVATAR_PRESETS[0]);
                 setBio(data.bio || '');
                 setTopPick(data.top_pick || '');
+            } else {
+                // Si no existe perfil en DB (borrado accidental o primer login sin trigger),
+                // usamos los metadatos de Auth para pre-llenar.
+                console.log('No profile found, using auth metadata');
+                setUsername(user.user_metadata.full_name || '');
+                setAvatarUrl(user.user_metadata.avatar_url || AVATAR_PRESETS[0]);
             }
             setLoading(false);
         };
