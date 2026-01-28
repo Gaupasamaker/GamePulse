@@ -67,4 +67,45 @@ export async function POST() {
         console.error('Error fatal al poblar usuarios:', err);
         return NextResponse.json({ error: err.message || 'Internal Server Error' }, { status: 500 });
     }
+
+}
+
+export async function DELETE() {
+    try {
+        console.log('Iniciando limpieza de usuarios fantasma...');
+
+        // 1. Obtener todos los usuarios REALES de Auth (supabaseAdmin tiene acceso a auth)
+        const { data: { users }, error: authError } = await supabaseAdmin.auth.admin.listUsers();
+
+        if (authError) {
+            throw authError;
+        }
+
+        const realUserIds = users.map(u => u.id);
+
+        // 2. Eliminar perfiles que NO estén en la lista de usuarios reales
+        // Usamos .not('id', 'in', realUserIds) si la lista no está vacía
+        let query = supabaseAdmin.from('profiles').delete();
+
+        if (realUserIds.length > 0) {
+            query = query.not('id', 'in', `(${realUserIds.join(',')})`);
+        }
+
+        // Ejecutar borrado
+        const { data, error, count } = await query;
+
+        if (error) {
+            console.error('Error eliminando usuarios:', error);
+            return NextResponse.json({ error: error.message }, { status: 500 });
+        }
+
+        return NextResponse.json({
+            message: `Se han eliminado los usuarios fantasma correctamente.`,
+            count: count // Supabase suele devolver null en count con delete salvo configuración, pero intentamos
+        });
+
+    } catch (err: any) {
+        console.error('Error fatal al limpiar usuarios:', err);
+        return NextResponse.json({ error: err.message || 'Internal Server Error' }, { status: 500 });
+    }
 }

@@ -66,6 +66,25 @@ export default function AdminPage() {
                     >
                         <User size={16} /> POPULATE (TEST)
                     </button>
+                    <button
+                        onClick={async () => {
+                            if (!confirm('¿Seguro que quieres eliminar a todos los usuarios fantasma? Los usuarios reales NO se verán afectados.')) return;
+                            try {
+                                const res = await fetch('/api/admin/populate', { method: 'DELETE' });
+                                const data = await res.json();
+                                if (res.ok) {
+                                    alert(data.message);
+                                } else {
+                                    alert('Error: ' + data.error);
+                                }
+                            } catch (e) {
+                                alert('Error de conexión');
+                            }
+                        }}
+                        className="terminal-btn bg-red-500/10 text-red-500 border-red-500/30 hover:bg-red-500/20"
+                    >
+                        <Trash2 size={16} /> WIPE BOTS
+                    </button>
                     <button className="terminal-btn terminal-btn-primary">
                         <Plus size={16} /> {t('add_entity')}
                     </button>
