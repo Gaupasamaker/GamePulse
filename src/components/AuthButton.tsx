@@ -7,11 +7,14 @@ import { useLanguage } from '@/providers/LanguageProvider';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 
+import { AuthModal } from './AuthModal';
+
 export const AuthButton = () => {
-    const { user, signInWithGoogle, signOut, loading } = useAuth();
+    const { user, signOut, loading } = useAuth();
     const { t } = useLanguage();
     const [avatar, setAvatar] = useState<string | null>(null);
     const [username, setUsername] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         if (user) {
@@ -98,12 +101,15 @@ export const AuthButton = () => {
     }
 
     return (
-        <button
-            onClick={signInWithGoogle}
-            className="flex items-center gap-2 px-3 py-1.5 bg-primary-app text-primary-foreground-app text-xs font-bold font-mono rounded hover:brightness-110 transition-colors"
-        >
-            <LogIn size={14} />
-            LOGIN
-        </button>
+        <>
+            <button
+                onClick={() => setIsModalOpen(true)}
+                className="flex items-center gap-2 px-3 py-1.5 bg-primary-app text-primary-foreground-app text-xs font-bold font-mono rounded hover:brightness-110 transition-colors"
+            >
+                <LogIn size={14} />
+                LOGIN
+            </button>
+            <AuthModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        </>
     );
 };

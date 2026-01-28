@@ -152,10 +152,21 @@ export const NewsFeed: React.FC<{ ticker?: string; query?: string; categoryLabel
         const fetchPortfolio = async () => {
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
-                const { data } = await supabase.from('portfolio_positions').select('symbol').eq('user_id', user.id);
+                // Fetch from transactions (Cloud Source of Truth)
+                const { data } = await supabase.from('transactions').select('ticker').eq('user_id', user.id);
                 if (data && data.length > 0) {
-                    const symbols = Array.from(new Set(data.map(p => p.symbol)));
+                    const symbols = Array.from(new Set(data.map(p => p.ticker)));
                     setPortfolioSymbols(symbols);
+                } else {
+                    // Fallback to local storage if offline or not synced? 
+                    // No, for news feed strictly adhere to what we know. 
+                    const local = localStorage.getItem('gamepulse_portfolio');
+                    if (local) {
+                        const parsed = JSON.parse(local);
+                        if (Array.isArray(parsed)) {
+                            setPortfolioSymbols(parsed.map((p: any) => p.ticker));
+                        }
+                    }
                 }
             }
         };
@@ -253,10 +264,12 @@ export const NewsFeed: React.FC<{ ticker?: string; query?: string; categoryLabel
                 ) : (
                     <div className="text-center p-8 border border-dashed border-border-app rounded-md text-muted-foreground-app font-mono text-xs flex flex-col items-center gap-2 max-w-md mx-auto">
                         <Layout size={24} className="opacity-50" />
-                        {activeTab === 'portfolio' && portfolioSymbols.length === 0 ? (
-                            <span>
-                                {t('no_portfolio_news_desc')}
-                            </span>
+                        {activeTab === 'portfolio' ? (
+                            portfolioSymbols.length === 0 ? (
+                                <span>{t('no_portfolio_news_desc')}</span>
+                            ) : (
+                                <span>{t('no_news_portfolio_match')}</span>
+                            )
                         ) : (
                             <span>{t('no_news')}</span>
                         )}

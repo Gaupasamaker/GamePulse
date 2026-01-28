@@ -10,6 +10,7 @@ interface AuthContextType {
     session: Session | null;
     loading: boolean;
     signInWithGoogle: () => Promise<void>;
+    signInWithOtp: (email: string) => Promise<void>;
     signOut: () => Promise<void>;
 }
 
@@ -44,13 +45,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (error) console.error('Error logging in:', error);
     };
 
+    const signInWithOtp = async (email: string) => {
+        const { error } = await supabase.auth.signInWithOtp({
+            email,
+            options: {
+                emailRedirectTo: `${window.location.origin}/auth/callback`,
+            }
+        });
+        if (error) {
+            console.error('Error sending OTP:', error);
+            throw error;
+        }
+    };
+
     const signOut = async () => {
         const { error } = await supabase.auth.signOut();
         if (error) console.error('Error logging out:', error);
     };
 
     return (
-        <AuthContext.Provider value={{ user, session, loading, signInWithGoogle, signOut }}>
+        <AuthContext.Provider value={{ user, session, loading, signInWithGoogle, signInWithOtp, signOut }}>
             {children}
         </AuthContext.Provider>
     );
