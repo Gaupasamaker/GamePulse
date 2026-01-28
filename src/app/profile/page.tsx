@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { User, Save, Loader2, AlertCircle, CheckCircle2, MessageSquare, Swords } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ChallengesPanel } from '@/components/ChallengesPanel';
+import { SocialShareButton } from '@/components/SocialShareButton';
 
 const AVATAR_PRESETS = [
     // Pixel Art "Gamer" style
@@ -115,9 +116,16 @@ export default function ProfilePage() {
 
     return (
         <div className="max-w-4xl mx-auto p-4 md:p-8 flex flex-col gap-8">
-            <h1 className="text-3xl font-bold font-mono text-foreground-app tracking-tighter border-b border-border-app pb-4">
-                MI PERFIL
-            </h1>
+            <div className="flex justify-between items-center border-b border-border-app pb-4">
+                <h1 className="text-3xl font-bold font-mono text-foreground-app tracking-tighter">
+                    MI PERFIL
+                </h1>
+                <SocialShareButton
+                    title="Share Profile"
+                    text={`Check out my investment portfolio on GamePulse! 🚀`}
+                    url={typeof window !== 'undefined' ? `${window.location.origin}/profile/${user.id}` : ''}
+                />
+            </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Columna Izquierda: Formulario */}
