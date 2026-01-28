@@ -227,30 +227,47 @@ export default function ProfilePage() {
                         Selecciona tu Avatar
                     </h3>
 
-                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
-                        {AVATAR_PRESETS.map((url, index) => (
-                            <button
-                                key={index}
-                                onClick={() => setAvatarUrl(url)}
-                                className={`aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${avatarUrl === url
-                                    ? 'border-primary-app shadow-[0_0_10px_#3b82f680]'
-                                    : 'border-transparent hover:border-gray-600 bg-secondary-app'
-                                    }`}
-                            >
-                                <img src={url} alt={`Avatar ${index}`} className="w-full h-full object-cover" />
-                            </button>
-                        ))}
+                    <div className="max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                        <div className="grid grid-cols-4 gap-3">
+                            {AVATAR_PRESETS.map((url, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => setAvatarUrl(url)}
+                                    className={`aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105 group relative ${avatarUrl === url
+                                        ? 'border-primary-app shadow-[0_0_10px_#3b82f680] ring-1 ring-primary-app'
+                                        : 'border-transparent hover:border-gray-600 bg-secondary-app'
+                                        }`}
+                                >
+                                    <img src={url} alt={`Avatar ${index}`} className="w-full h-full object-cover" />
+                                    {avatarUrl === url && (
+                                        <div className="absolute inset-0 bg-primary-app/20 flex items-center justify-center">
+                                            <div className="w-2 h-2 rounded-full bg-primary-app shadow-[0_0_5px_white]"></div>
+                                        </div>
+                                    )}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
-                    <div className="mt-6 pt-6 border-t border-border-app">
-                        <label className="block text-xs font-mono text-muted-foreground-app mb-2">O pega una URL personalizada:</label>
-                        <input
-                            type="text"
-                            value={avatarUrl}
-                            onChange={(e) => setAvatarUrl(e.target.value)}
-                            className="terminal-input w-full text-xs"
-                            placeholder="https://..."
-                        />
+                    <div className="mt-4 pt-4 border-t border-border-app">
+                        <details className="group">
+                            <summary className="text-[10px] uppercase font-mono text-muted-foreground-app cursor-pointer hover:text-foreground-app flex items-center gap-2 list-none select-none">
+                                <span className="text-lg leading-none transition-transform group-open:rotate-90">›</span>
+                                Usar URL Personalizada
+                            </summary>
+                            <div className="mt-2 animate-in slide-in-from-top-2">
+                                <input
+                                    type="text"
+                                    value={avatarUrl}
+                                    onChange={(e) => setAvatarUrl(e.target.value)}
+                                    className="terminal-input w-full text-xs"
+                                    placeholder="https://imgur.com/..."
+                                />
+                                <p className="text-[9px] text-muted-foreground-app mt-1">
+                                    Pega la URL de una imagen (JPG, PNG, SVG).
+                                </p>
+                            </div>
+                        </details>
                     </div>
                 </div>
             </div>
