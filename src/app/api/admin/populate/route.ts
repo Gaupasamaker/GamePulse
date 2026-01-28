@@ -75,11 +75,19 @@ export async function DELETE() {
         console.log('Iniciando limpieza de usuarios fantasma...');
 
         // 1. Obtener todos los usuarios REALES de Auth (supabaseAdmin tiene acceso a auth)
-        const { data: { users }, error: authError } = await supabaseAdmin.auth.admin.listUsers();
+        // Agregamos logs para depurar en Vercel
+        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        console.log(`[DELETE] Service Key Present: ${!!serviceKey}, Length: ${serviceKey?.length}`);
+
+        const { data, error: authError } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
 
         if (authError) {
-            throw authError;
+            console.error('[DELETE] Auth Error:', authError);
+            throw new Error(`Auth Error: ${authError.message} (Status: ${authError.status})`);
         }
+
+        const users = data.users;
+        console.log(`[DELETE] Usuarios reales encontrados: ${users.length}`);
 
         const realUserIds = users.map(u => u.id);
 
@@ -92,7 +100,7 @@ export async function DELETE() {
         }
 
         // Ejecutar borrado
-        const { data, error, count } = await query;
+        const { data: queryData, error, count } = await query;
 
         if (error) {
             console.error('Error eliminando usuarios:', error);
