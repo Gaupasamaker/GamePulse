@@ -3,9 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { User, Trophy, TrendingUp, Swords, ArrowLeft, Loader2, ShieldAlert } from 'lucide-react';
+import { User, Trophy, TrendingUp, Swords, ArrowLeft, Loader2, ShieldAlert, Medal, Users, Zap } from 'lucide-react';
 import { useAuth } from '@/providers/AuthProvider';
 import Link from 'next/link';
+import { SocialShareButton } from '@/components/SocialShareButton';
 
 export default function PublicProfilePage() {
     const params = useParams();
@@ -138,9 +139,15 @@ export default function PublicProfilePage() {
                 </div>
 
                 <div className="flex-1 text-center md:text-left flex flex-col gap-2">
-                    <h1 className="text-4xl font-bold font-mono text-foreground-app tracking-tight">
-                        {profile.username || 'Anonymous Investor'}
-                    </h1>
+                    <div className="flex justify-between items-start">
+                        <h1 className="text-4xl font-bold font-mono text-foreground-app tracking-tight">
+                            {profile.username || 'Anonymous Investor'}
+                        </h1>
+                        <SocialShareButton
+                            title="GamePulse Profile"
+                            text={`Check out ${profile.username}'s investment portfolio on GamePulse! 🚀`}
+                        />
+                    </div>
                     <div className="flex items-center justify-center md:justify-start gap-4 text-sm font-mono text-muted-foreground-app">
                         <span className="flex items-center gap-1">
                             <User size={14} /> Level {Math.floor((profile.ranking_points || 0) / 1000) + 1}
@@ -204,6 +211,10 @@ export default function PublicProfilePage() {
                                 {ua.achievements?.icon === 'User' && <User size={20} />}
                                 {ua.achievements?.icon === 'Swords' && <Swords size={20} />}
                                 {ua.achievements?.icon === 'ShieldAlert' && <ShieldAlert size={20} />}
+                                {ua.achievements?.icon === 'Medal' && <Medal size={20} />}
+                                {ua.achievements?.icon === 'Users' && <Users size={20} />}
+                                {ua.achievements?.icon === 'TrendingUp' && <TrendingUp size={20} />}
+                                {ua.achievements?.icon === 'Zap' && <TrendingUp size={20} strokeWidth={3} />} {/* Reusing TrendingUp or changing to Zap if imported */}
                                 {/* Add more icon mappings as needed */}
                                 {!ua.achievements?.icon && <Trophy size={20} />} {/* Default icon */}
                             </div>

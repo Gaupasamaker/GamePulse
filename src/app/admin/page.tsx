@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Shield, LayoutGrid, Plus, Edit2, Trash2, Globe, Tag, Save, X, User } from 'lucide-react';
 import { SEED_COMPANIES, Company } from '@/data/companies';
 import { useLanguage } from '@/providers/LanguageProvider';
+import { BadgeAwarder } from '@/components/BadgeAwarder';
 
 export default function AdminPage() {
     const [companies, setCompanies] = useState<Company[]>(SEED_COMPANIES);
@@ -69,6 +70,11 @@ export default function AdminPage() {
                         <Plus size={16} /> {t('add_entity')}
                     </button>
                 </div>
+            </section>
+
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <BadgeAwarder />
+                {/* Place for future admin tools */}
             </section>
 
             <div className="terminal-card overflow-hidden">
@@ -162,6 +168,6 @@ export default function AdminPage() {
                     Todas las entidades deben pertenecer exclusivamente al sector de videojuegos.
                 </p>
             </div>
-        </div>
+        </div >
     );
 }
