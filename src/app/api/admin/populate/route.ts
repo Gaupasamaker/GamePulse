@@ -107,7 +107,7 @@ export async function DELETE() {
         }
 
         // 3. Eliminar Perfiles
-        const { error: deleteProfilesError, count } = await supabaseAdmin
+        const { data: deletedProfiles, error: deleteProfilesError } = await supabaseAdmin
             .from('profiles')
             .delete()
             .in('id', botIds)
@@ -118,9 +118,11 @@ export async function DELETE() {
             throw deleteProfilesError;
         }
 
+        const deletedCount = deletedProfiles?.length || 0;
+
         return NextResponse.json({
-            message: `Se han purgado ${count} bots y sus transacciones correctamente.`,
-            count: count,
+            message: `Se han purgado ${deletedCount} bots y sus transacciones correctamente.`,
+            count: deletedCount,
             strategy: 'manual_cascade'
         });
 
