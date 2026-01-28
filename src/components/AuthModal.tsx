@@ -138,7 +138,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
                 <div className="bg-secondary-app/50 p-4 border-t border-border-app text-center">
                     <p className="text-[10px] text-muted-foreground-app">
-                        By continuing, you accept our Terms of Service.
+                        By continuing, you accept our <a href="/privacy" className="underline hover:text-foreground-app" target="_blank">Terms & Privacy Policy</a>.
                     </p>
                 </div>
             </div>

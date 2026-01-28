@@ -227,7 +227,7 @@ export default function ProfilePage() {
                         Selecciona tu Avatar
                     </h3>
 
-                    <div className="max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                    <div className="max-h-[240px] overflow-y-auto pr-2 custom-scrollbar border border-border-app/30 rounded p-2 bg-background-app/50">
                         <div className="grid grid-cols-4 gap-3">
                             {AVATAR_PRESETS.map((url, index) => (
                                 <button
