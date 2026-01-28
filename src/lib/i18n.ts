@@ -80,6 +80,8 @@ export const dictionary = {
         portfolio_tab: "MI PORTFOLIO",
         rank: "RANGO",
         player: "JUGADOR",
+        auth_modal_title: "INICIAR SESIÓN",
+        auth_modal_subtitle: "Únete a GamePulse Arena para guardar tu portfolio y competir globalmente.",
     },
     en: {
         dashboard: "DASHBOARD",
@@ -160,5 +162,7 @@ export const dictionary = {
         portfolio_tab: "MY PORTFOLIO",
         rank: "RANK",
         player: "PLAYER",
+        auth_modal_title: "LOGIN SESSION",
+        auth_modal_subtitle: "Join GamePulse Arena to save your portfolio and compete globally.",
     }
 };

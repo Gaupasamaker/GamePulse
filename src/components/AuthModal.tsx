@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { X, Mail, ArrowRight, Loader2, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/providers/AuthProvider';
+import { useLanguage } from '@/providers/LanguageProvider';
 
 interface AuthModalProps {
     isOpen: boolean;
@@ -11,6 +12,7 @@ interface AuthModalProps {
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     const { signInWithGoogle, signInWithOtp } = useAuth();
+    const { t } = useLanguage();
     const [email, setEmail] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [isSent, setIsSent] = useState(false);
@@ -58,10 +60,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 <div className="p-8">
                     <div className="text-center mb-8">
                         <h2 className="text-2xl font-bold font-mono tracking-tighter">
-                            INITIALIZE_<span className="text-primary-app">SESSION</span>
+                            {t('auth_modal_title')}
                         </h2>
                         <p className="text-muted-foreground-app font-mono text-sm mt-2">
-                            Access GamePulse Arena to compete globally.
+                            {t('auth_modal_subtitle')}
                         </p>
                     </div>
 
