@@ -12,9 +12,35 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://game-pulse-mauve.vercel.app"),
   title: "GamePulse | Gaming Business Intelligence",
-  description: "Monitorización de empresas líderes del sector de videojuegos.",
+  description: "Monitorización de empresas líderes del sector de videojuegos. Noticias, alertas y simulador de inversión.",
   manifest: "/manifest.json",
+  keywords: ["Gaming", "Stocks", "Finance", "Investment", "Simulator", "Business", "Esports"],
+  authors: [{ name: "GamePulse Team" }],
+  openGraph: {
+    type: "website",
+    locale: "es_ES",
+    url: "https://game-pulse-mauve.vercel.app/",
+    title: "GamePulse | The Gaming Stock Market Tracker",
+    description: "Analiza el mercado, gestiona tu portfolio virtual y compite en la GamePulse Arena.",
+    siteName: "GamePulse",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "GamePulse Dashboard Preview",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GamePulse | Gaming Market Intelligence",
+    description: "Real-time gaming stocks, news, and portfolio simulation.",
+    images: ["/og-image.png"],
+    creator: "@GamePulseApp", // Placeholder
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
