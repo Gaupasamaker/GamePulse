@@ -18,6 +18,7 @@ import {
     Minus,
     Layout
 } from 'lucide-react';
+import { SentimentMeter } from '@/components/SentimentMeter';
 
 interface NewsCardProps {
     news: any;
@@ -240,6 +241,11 @@ export const NewsFeed: React.FC<{ ticker?: string; query?: string; categoryLabel
                     </div>
                 )}
             </div>
+
+            {/* Sentiment Meter - Only show for general market news or when news exists */}
+            {activeTab === 'market' && !ticker && news.length > 0 && (
+                <SentimentMeter news={news} />
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
                 {news.length > 0 ? (

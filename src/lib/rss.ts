@@ -11,13 +11,15 @@ export interface RSSItem {
     source: string;
 }
 
+// Fallback RSS Feeds for Gaming Industry News
 const FEEDS = [
-    { source: 'GamesIndustry.biz', url: 'https://www.gamesindustry.biz/feed/news' },
+    { source: 'GamesIndustry.biz', url: 'https://www.gamesindustry.biz/feed/news.xml' },
     { source: 'Game Developer', url: 'https://www.gamedeveloper.com/rss.xml' },
     { source: 'VGC', url: 'https://www.videogameschronicle.com/category/news/feed/' },
     { source: 'Eurogamer', url: 'https://www.eurogamer.net/feed/news' },
     { source: 'Kotaku', url: 'https://kotaku.com/rss' },
-    { source: 'Polygon', url: 'https://www.polygon.com/rss/index.xml' }
+    { source: 'Polygon', url: 'https://www.polygon.com/rss/index.xml' },
+    { source: 'VentureBeat', url: 'https://venturebeat.com/category/games/feed/' }
 ];
 
 export async function getRSSNews(): Promise<RSSItem[]> {
