@@ -42,11 +42,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     return (
         <div
             onClick={onClose}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+            className="fixed inset-0 z-[100] w-screen h-screen flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200 cursor-pointer"
         >
             <div
                 onClick={(e) => e.stopPropagation()}
-                className="bg-background-app border border-border-app rounded-xl shadow-2xl w-full max-w-md overflow-hidden relative animate-in zoom-in-95 duration-200"
+                className="bg-background-app border border-border-app rounded-xl shadow-2xl w-full max-w-md overflow-hidden relative animate-in zoom-in-95 duration-200 cursor-default"
             >
                 <button
                     onClick={onClose}
