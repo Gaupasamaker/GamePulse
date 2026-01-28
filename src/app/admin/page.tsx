@@ -92,7 +92,12 @@ export default function AdminPage() {
                                 if (res.ok) {
                                     alert(data.message);
                                 } else {
-                                    alert('Error: ' + data.error);
+                                    // Mensaje de error detallado
+                                    let errorMsg = `Error: ${data.error}`;
+                                    if (data.debug) {
+                                        errorMsg += `\n\nDebug Info:\nKey Present: ${data.debug.key_present}\nKey Length: ${data.debug.key_length}\nURL: ${data.debug.url}`;
+                                    }
+                                    alert(errorMsg);
                                 }
                             } catch (e) {
                                 alert('Error de conexión');

@@ -114,6 +114,19 @@ export async function DELETE() {
 
     } catch (err: any) {
         console.error('Error fatal al limpiar usuarios:', err);
-        return NextResponse.json({ error: err.message || 'Internal Server Error' }, { status: 500 });
+
+        // Debug info para el usuario (ayuda a diagnosticar problemas de Vercel)
+        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        const debugInfo = {
+            key_present: !!serviceKey,
+            key_length: serviceKey?.length || 0,
+            url: process.env.NEXT_PUBLIC_SUPABASE_URL,
+            error_details: err.message
+        };
+
+        return NextResponse.json({
+            error: err.message || 'Internal Server Error',
+            debug: debugInfo
+        }, { status: 500 });
     }
 }
