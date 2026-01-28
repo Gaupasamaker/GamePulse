@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { Shield, LayoutGrid, Plus, Edit2, Trash2, Globe, Tag, Save, X, User } from 'lucide-react';
 import { SEED_COMPANIES, Company } from '@/data/companies';
 import { useLanguage } from '@/providers/LanguageProvider';
+import { useAuth } from '@/providers/AuthProvider';
+import { useRouter } from 'next/navigation';
 import { BadgeAwarder } from '@/components/BadgeAwarder';
 
 export default function AdminPage() {
@@ -11,6 +13,20 @@ export default function AdminPage() {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editForm, setEditForm] = useState<Company | null>(null);
     const { t } = useLanguage();
+    const { user, loading } = useAuth();
+    const router = useRouter();
+
+    React.useEffect(() => {
+        if (!loading) {
+            if (!user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+                router.push('/');
+            }
+        }
+    }, [user, loading, router]);
+
+    if (loading || !user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+        return null; // O un spinner
+    }
 
     const startEdit = (company: Company) => {
         setEditingId(company.id);
